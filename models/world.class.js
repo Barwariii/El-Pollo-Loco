@@ -12,7 +12,11 @@ class World {
     ]
 
     backgroundObjects = [
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0, 80)
+        new BackgroundObject('img/5_background/layers/air.png', 0),
+        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
+        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
+        new BackgroundObject('img/5_background/layers/1_first_layer/1.png', 0)
+
     ]
     canvas;
     ctx;
@@ -30,32 +34,11 @@ class World {
 
 
         // enemies for-loop
-        this.addToMap(this.character);
-        // this.ctx.drawImage(this.character.img, this.character.x, this.character.y, this.character.width, this.character.height);
-        
-        
-        // this.enemies.forEach(enemy => {
-        //     // this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-        //     this.addToMap(enemy);
-        // });
-
-
-        // // clouds for-loop
-        // this.clouds.forEach(cloud => {
-        //     // this.ctx.drawImage(cloud.img, cloud.x, cloud.y, cloud.width, cloud.height);
-        //     this.addToMap(cloud);
-        // });
-
-
-        // this.backgroundObjects.forEach((bgo)=> {
-        //     this.addToMap(bgo);
-        // })
-
-
-        this.addObjectsToMap(this.clouds);
-        this.addObjectsToMap(this.enemies);
         this.addObjectsToMap(this.backgroundObjects);
-        // darw() wird immer wieder aufgerufen
+        this.addObjectsToMap(this.clouds);
+        this.addToMap(this.character);
+        this.addObjectsToMap(this.enemies);
+
         let self = this; // wir haben da this in eine variable reingepackt da da bei aufrufen in requestAnimationFrame this wird nicht errkant
         requestAnimationFrame(function() {
             self.draw();

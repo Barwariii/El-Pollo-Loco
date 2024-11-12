@@ -11,7 +11,7 @@
 
 class Chicken extends MovableObject {
     // jetzt Chicken hat alle eigenchaften die MovableObject hat
-
+    y = 210;
 
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
