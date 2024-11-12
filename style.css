@@ -2,7 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(247, 180, 99); /*temporary background-color for comfortable coding */
+    background-color: rgb(58, 57, 55); /*temporary background-color for comfortable coding */
 }
 
 canvas {

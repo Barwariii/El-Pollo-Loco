@@ -1,5 +1,6 @@
 let canvas;
-let ctx;
+// let ctx;
+let world;
 // let character = new Character();
 
 // let enemies = [
@@ -8,11 +9,13 @@ let ctx;
 //     new Chicken(),
 // ];
 
-let world = new World();
+// let world = new World();
+
 
 function init() {
     canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
+    // ctx = canvas.getContext('2d');
+    world = new World(canvas);
 
 
     console.log('My charechter is', world.character);
