@@ -4,11 +4,11 @@ class World {
     enemies = [
         new Chicken(),
         new Chicken(),
-        new Chicken()
+        new Chicken(),
     ];
 
     clouds = [
-        new Cloud()
+        new Cloud(),
     ]
 
     backgroundObjects = [
@@ -20,11 +20,18 @@ class World {
     ]
     canvas;
     ctx;
+    keyboard;
 
-    constructor(canvas){
+    constructor(canvas, keyboard){
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // hier werden wir auf canvas zeile 10 zugreifen
+        this.keyboard = keyboard;
         this.draw();
+        this.setWorld();
+    }
+
+    setWorld() {
+        this.character.world = this;
     }
 
 

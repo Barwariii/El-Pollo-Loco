@@ -1,10 +1,16 @@
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(58, 57, 55); /*temporary background-color for comfortable coding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-image: url("img/5_background/layers/air.png"); */
+  /* background-image: url("img/BG_2.png"); */
+  /* background-size: 120vw 100vh; */
+  /* background-size: cover; */
+  /* background-repeat: no-repeat; */
+  background-color: rgb(58,57,55); /*temporary background-color for comfortable coding */
 }
 
 canvas {
-    background-color: black;
+  background-color: black;
+  border: 2px solid rgb(27, 27, 27);
 }
