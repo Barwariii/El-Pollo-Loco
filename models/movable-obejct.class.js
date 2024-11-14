@@ -21,7 +21,14 @@ class MovableObject {
             img.src = path; //! da hate ich ein fehler und zwar bei src hatte ich scr geschrieben 
             this.imageCache[path] = img;
         });
+    }
 
+
+    playAnimation(images){
+        let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 % 6; 
+        let path = images[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
     }
 
     moveRight() {
