@@ -1,7 +1,8 @@
 class Chicken extends MovableObject {
     // jetzt Chicken hat alle eigenchaften die MovableObject hat
-    height = 100;
-    y = 330;
+    height = 65;
+    width = 65;
+    y = 360;
 
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
