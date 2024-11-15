@@ -18,7 +18,7 @@ class MovableObject {
     loadImages(arr) {
         arr.forEach((path) => {
             let img = new Image();
-            img.src = path; //! da hate ich ein fehler und zwar bei src hatte ich scr geschrieben 
+            img.src = path;
             this.imageCache[path] = img;
         });
     }
