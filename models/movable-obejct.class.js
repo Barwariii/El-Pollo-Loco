@@ -1,11 +1,4 @@
-class MovableObject {
-    x = 120;
-    y = 190;
-    img;
-    height = 250;
-    width = 100;
-    imageCache = {};
-    currentImage = 0;
+class MovableObject extends DrawableObject {
     speed = 0.3;
     otherDirection = false;
     speedy = 0;
@@ -27,15 +20,6 @@ class MovableObject {
         return this.y < 90;
     }
 
-
-    loadImage(path) {
-        this.img = new Image(); // this.img = document.getElementById('Image')  <img id="image" src>
-        this.img.src = path;
-    }
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    }
 
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken) {
@@ -77,14 +61,6 @@ class MovableObject {
 
     isDead() {
         return this.energy == 0;
-    }
-
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
     }
 
 
