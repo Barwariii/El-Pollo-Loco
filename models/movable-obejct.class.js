@@ -21,17 +21,6 @@ class MovableObject extends DrawableObject {
     }
 
 
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken) {
-            //* Blue rectangle
-            ctx.beginPath();
-            ctx.lineWidth = '5';
-            ctx.strokeStyle = 'blue';
-            ctx.rect(this.x, this.y, this.width, this.height);
-            ctx.stroke();
-        }
-    }
-
     // character.isColliding(chikcen);  Kollisionsberechnung
     isColliding(mo) {
         return this.x +this.width > mo.x &&
@@ -56,7 +45,7 @@ class MovableObject extends DrawableObject {
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit; // Diffrence in ms
         timepassed = timepassed / 1000; //Defrence in s
-        return timepassed < 0.5;
+        return timepassed < 1;
     }
 
     isDead() {
