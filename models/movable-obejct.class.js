@@ -59,6 +59,16 @@ class MovableObject {
             // obj.onCollisionCourse; // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
     }
 
+    hit () {
+        this.energy -= 5;
+        if(this.energy <= 0) {
+            this.energy = 0;
+        }
+    }
+
+    isDead() {
+        return this.energy == 0;
+    }
 
     loadImages(arr) {
         arr.forEach((path) => {
