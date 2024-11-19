@@ -1,14 +1,7 @@
 class statusBar extends DrawableObject {
 
     // health statusbar images
-    IMAGES = [
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png',
-    ];
+    IMAGES = [];
 
 
     percentage = 100;
@@ -21,7 +14,7 @@ class statusBar extends DrawableObject {
         this.height = 50;
         this.setPercentage(100);
     }
-
+    
 
     // setpercentage(50);
     setPercentage(percentagePara) {

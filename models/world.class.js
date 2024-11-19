@@ -15,6 +15,9 @@ class World {
     keyboard;
     camera_x = 0;
     statusBar = new statusBar();
+    statusBarHealth = new statusBarHealth();
+    statusBarCoins = new statusBarCoins();
+    statusBarBottles = new statusBarBottles();
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -52,11 +55,15 @@ class World {
 
         // enemies for-loop
         this.addObjectsToMap(this.level.backgroundObjects);
-
-        this.ctx.translate(-this.camera_x, 0); // Back
-        this.addToMap(this.statusBar);
-        this.ctx.translate(this.camera_x, 0); // Forwards
+        
         //* --------- Space for fixed objects ---------
+        this.ctx.translate(-this.camera_x, 0); // Back
+        // this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarHealth);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.statusBarBottles);
+        this.ctx.translate(this.camera_x, 0); // Forwards
+
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);

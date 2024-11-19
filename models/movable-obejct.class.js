@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     speedy = 0;
     acceleration = 2.5;
-    energy = 100;
+    energy = 1100;
     lastHit = 0;
 
 
@@ -23,9 +23,9 @@ class MovableObject extends DrawableObject {
 
     // character.isColliding(chikcen);  Kollisionsberechnung
     isColliding(mo) {
-        return this.x +this.width > mo.x &&
+        return this.x + this.width > mo.x &&
         this.y + this.height > mo.y &&
-        this.x < mo.x &&
+        this.x < mo.x + mo.width &&
         this.y < mo.y + mo.height;
         // return (this.X + this.width) >= obj.X && this.X <= (obj.X + obj.width) &&
         //     (this.Y + this.offsetY + this.height) >= obj.Y &&
