@@ -3,6 +3,12 @@ class Character extends MovableObject {
     height = 350;
     y = 90;
     speed = 10;
+    offset = {
+        top: 140,
+        bottom: 10,
+        left: 4,
+        right: 9,
+    };
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -79,7 +85,7 @@ class Character extends MovableObject {
 
             // If no key is pressed (no movement)
             if ((!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) || this.isAboveGround()) {
-                // Pauses the walking sound if no key is pressed
+                // Pauses the walking sound if no key is pressed or if character isAboveGround();
                 this.walking_sound.pause();
                 this.walking_sound.currentTime = 0;  // Resets the sound to the beginning
             }

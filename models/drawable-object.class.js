@@ -17,7 +17,7 @@ class DrawableObject {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
-    
+
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken) {
             //* Blue rectangle
@@ -29,13 +29,28 @@ class DrawableObject {
         }
     }
 
+    drawFrameRed(ctx) {
+        if (this instanceof Coins || this instanceof Chicken || this instanceof Character || this instanceof Bottles) {
+            const xPos = this.x + this.offset.left;
+            const yPos = this.y + this.offset.top;
+            const width = this.width - this.offset.left - this.offset.right;
+            const height = this.height - this.offset.top - this.offset.bottom;
 
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
+            ctx.beginPath();
+            ctx.lineWidth = '5';
+            ctx.strokeStyle = 'red';
+            ctx.rect(xPos, yPos, width, height);
+            ctx.stroke();
+        }
     }
+
+
+loadImages(arr) {
+    arr.forEach((path) => {
+        let img = new Image();
+        img.src = path;
+        this.imageCache[path] = img;
+    });
+}
     
 }

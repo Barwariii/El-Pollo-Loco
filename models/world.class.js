@@ -10,7 +10,6 @@ class World {
     statusBarHealth = new statusBarHealth();
     statusBarCoins = new statusBarCoins();
     statusBarBottles = new statusBarBottles();
-    // throwableobjects = [new ThrowableObject()];
     throwableobjects = [];
 
 
@@ -45,6 +44,15 @@ class World {
     }
 
     checkCollisions() {
+        this.level.enemies.forEach( (enemy) => {
+            if(this.character.isColliding(enemy) ) {
+                this.character.hit();
+                this.statusBar.setPercentage(this.character.energy);
+                // this.character.energy -= 5;
+                console.log('Collision with Character, energy', this.character.energy);
+            }
+        })
+
         this.level.enemies.forEach( (enemy) => {
             if(this.character.isColliding(enemy) ) {
                 this.character.hit();
@@ -104,6 +112,7 @@ class World {
         // this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         mo.draw(this.ctx);
         mo.drawFrame(this.ctx);
+        mo.drawFrameRed(this.ctx);
 
 
         if (mo.otherDirection) {
