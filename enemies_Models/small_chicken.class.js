@@ -1,8 +1,8 @@
-class Chicken extends MovableObject {
-    // jetzt Chicken hat alle eigenchaften die MovableObject hat
+class smallChicken extends MovableObject {
     height = 65;
     width = 65;
     y = 360;
+    energy = 20;
     offset = {
         top: 60,
         bottom: 60,
@@ -14,6 +14,10 @@ class Chicken extends MovableObject {
         'img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
         'img/3_enemies_chicken/chicken_small/1_walk/3_w.png'
+    ];
+
+    IMAGES_DEAD = [
+        'img/3_enemies_chicken/chicken_small/2_dead/dead.png',
     ];
 
     constructor() {
@@ -35,5 +39,12 @@ class Chicken extends MovableObject {
         setInterval(() => {
             this.moveLeft();
         }, 1000 / 60);
+
+        setInterval(() => {
+
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            }
+        }, 50);
     }
 }

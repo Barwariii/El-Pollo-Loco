@@ -71,9 +71,12 @@ const allBottles = [
 
 const level1 = new Level(
     [
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
+        new smallChicken(),
+        new smallChicken(),
+        new smallChicken(),
+        new normalChicken(),
+        new normalChicken(),
+        new normalChicken(),
         new Endboss()
     ],
     [
@@ -104,11 +107,8 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * 3),
 
     ],
-    // coins = [
-    //     new Coins(),
-    //     new Coins(),
-    //     new Coins()
-    // ],
+
+
     coins = allCoins,
     bottles = allBottles
 

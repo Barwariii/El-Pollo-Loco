@@ -112,7 +112,7 @@ class World {
         // this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         mo.draw(this.ctx);
         mo.drawFrame(this.ctx);
-        mo.drawFrameRed(this.ctx);
+        mo.drawRedFrame(this.ctx);
 
 
         if (mo.otherDirection) {

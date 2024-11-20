@@ -7,8 +7,8 @@ class Coins extends MovableObject {
     offset = {
         top: 40,
         bottom: 40,
-        left: 2,
-        right: 2,
+        left: 40,
+        right: 40,
     };
 
     IMAGES_Coins = [

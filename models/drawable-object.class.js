@@ -19,7 +19,7 @@ class DrawableObject {
 
 
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken) {
+        if (this instanceof Character || this instanceof smallChicken || this instanceof normalChicken) {
             //* Blue rectangle
             ctx.beginPath();
             ctx.lineWidth = '5';
@@ -29,8 +29,8 @@ class DrawableObject {
         }
     }
 
-    drawFrameRed(ctx) {
-        if (this instanceof Coins || this instanceof Chicken || this instanceof Character || this instanceof Bottles) {
+    drawRedFrame(ctx) {
+        if (this instanceof Coins || this instanceof smallChicken || this instanceof normalChicken || this instanceof Character || this instanceof Bottles) {
             const xPos = this.x + this.offset.left;
             const yPos = this.y + this.offset.top;
             const width = this.width - this.offset.left - this.offset.right;
