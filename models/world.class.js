@@ -1,14 +1,6 @@
 class World {
 
     character = new Character();
-    // coins = [
-    //     new Coins(),
-    //     new Coins(),
-    //     new Coins()
-    // ];
-    // enemies = level1.enemies;
-    // clouds = level1.clouds;
-    // backgroundObjects = level1.backgroundObjects;
     level = level1;
     canvas;
     ctx;
@@ -18,6 +10,10 @@ class World {
     statusBarHealth = new statusBarHealth();
     statusBarCoins = new statusBarCoins();
     statusBarBottles = new statusBarBottles();
+    // throwableobjects = [new ThrowableObject()];
+    throwableobjects = [];
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -25,24 +21,38 @@ class World {
         this.keyboard = keyboard;
         this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
         this.character.world = this;
     }
 
-    checkCollisions() {
+    run() {
         setInterval(() => {
-            this.level.enemies.forEach( (enemy) => {
-                if(this.character.isColliding(enemy) ) {
-                    this.character.hit();
-                    this.statusBar.setPercentage(this.character.energy);
-                    // this.character.energy -= 5;
-                    console.log('Collision with Character, energy', this.character.energy);
-                }
-            })
+
+            // check Collisions();
+            this.checkCollisions();
+            this.checkThrowableObject();
         }, 200);
+    }
+
+    checkThrowableObject() { //throw bottle if D key pressd
+        if(this.keyboard.D) {
+            let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 140); //x = 60, y = 160
+            this.throwableobjects.push(bottle);
+        }
+    }
+
+    checkCollisions() {
+        this.level.enemies.forEach( (enemy) => {
+            if(this.character.isColliding(enemy) ) {
+                this.character.hit();
+                this.statusBar.setPercentage(this.character.energy);
+                // this.character.energy -= 5;
+                console.log('Collision with Character, energy', this.character.energy);
+            }
+        })
     }
 
 
@@ -69,10 +79,11 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.throwableobjects); // throwableobjects is a variable for throw bottles  
 
         this.ctx.translate(-this.camera_x, 0); // move camera to right agian with character
 
-        let self = this; // wir haben da this in eine variable reingepackt da da bei aufrufen in requestAnimationFrame this wird nicht errkant
+        let self = this; // wir haben da 'this' in eine variable reingepackt da bei aufrufen in requestAnimationFrame 'this' wird nicht errkant
         requestAnimationFrame(function () {
             self.draw();
         });
@@ -89,26 +100,14 @@ class World {
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
-            // this.ctx.save();
-            // this.ctx.translate(mo.width, 0);
-            // this.ctx.scale(-1, 1);
-            // mo.x = mo.x * -1;
         }
         // this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         mo.draw(this.ctx);
         mo.drawFrame(this.ctx);
 
-        //* Blue rectangle
-        // this.ctx.beginPath();
-        // this.ctx.lineWidth = '5';
-        // this.ctx.strokeStyle = 'blue';
-        // this.ctx.rect(mo.x, mo.y, mo.width, mo.height);
-        // this.ctx.stroke();
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);
-            // mo.x = mo.x * -1;
-            // this.ctx.restore();
         }
     }
 
