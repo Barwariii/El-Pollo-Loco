@@ -20,9 +20,6 @@ class Coins extends MovableObject {
         super().loadImage('img/8_coin/coin_1.png');
         this.loadImages(this.IMAGES_Coins);
 
-
-        // this.x = 200 + Math.random() * 300;
-
         // Set each coin’s position based on the count
         // Set each coin’s x position based on the count
         this.x = baseOffset + Coins.count * (40);  // Adjust `10` to change spacing

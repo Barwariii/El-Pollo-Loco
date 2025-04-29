@@ -3,8 +3,10 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
-    energy = 1100;
+    energy = 100;
     lastHit = 0;
+    coins = 0; // Initialize coins property
+    bottles = 0; // Initialize bottles property
 
 
     applyGravity() {
@@ -31,10 +33,38 @@ class MovableObject extends DrawableObject {
             this.y + this.height > mo.y &&
             this.x < mo.x + mo.width &&
             this.y < mo.y + mo.height;
-        // return (this.X + this.width) >= obj.X && this.X <= (obj.X + obj.width) &&
-        //     (this.Y + this.offsetY + this.height) >= obj.Y &&
-        //     (this.Y + this.offsetY) <= (obj.Y + obj.height); //&&
-        // obj.onCollisionCourse; // Optional: hiermit könnten wir schauen, ob ein Objekt sich in die richtige Richtung bewegt. Nur dann kollidieren wir. Nützlich bei Gegenständen, auf denen man stehen kann.
+    }
+
+
+    collectCoin() {
+        this.coins += 1;
+        console.log('Coins collected:', this.coins); // Debug log
+        if (this.world) {
+            console.log('Total Coins in Level:', this.world.level.totalCoins); // Debug log
+            const totalCoins = this.world.level.totalCoins || 1; // Fallback to 1
+            // const percentage = (this.coins / totalCoins) * 100;
+            const coinsPercentage = Math.min(100, Math.round((this.coins / totalCoins) * 100));
+
+            console.log('Calculated coinsPercentage:', coinsPercentage); // Debug log
+            this.world.statusBarCoins.setCoinsPercentage(coinsPercentage);
+        } else {
+            console.log('World is not defined!');
+        }
+    }
+
+
+    collectBottle() {
+        this.bottles += 1;
+        console.log('Bottles collected:', this.bottles); // Debug log
+        if (this.world) {
+            console.log('Total bottles in Level:', this.world.level.totalBottles); // Debug log
+            const totalBottles = this.world.level.totalBottles || 1; // Fallback to 1
+            const bottlesPercentage = Math.min(100, Math.round((this.bottles / totalBottles) * 100));
+            console.log('Calculated bottlesPercentage:', bottlesPercentage); // Debug log
+            this.world.statusBarBottles.setBottlePercentage(bottlesPercentage);
+        } else {
+            console.log('World is not defined!');
+        }
     }
 
     hit() {
@@ -53,7 +83,7 @@ class MovableObject extends DrawableObject {
     }
 
     isDead() {
-        return this.energy == 0;
+        return this.energy <= 0;
     }
 
 
@@ -65,7 +95,6 @@ class MovableObject extends DrawableObject {
     }
 
     moveRight() {
-        console.log('Moving right');
         this.x += this.speed;
     }
 

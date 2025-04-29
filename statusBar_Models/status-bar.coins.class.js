@@ -10,40 +10,18 @@ class statusBarCoins extends statusBar{
     ];
 
 
-    percentage = 0;
+    coinsPercentage = 0;
     constructor() {
         super();
+        this.loadImage('img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png');
         this.loadImages(this.IMAGES);
         this.x = 40;
         this.y = 35;
         this.width = 180;
         this.height = 50;
-        this.setPercentage(0);
+        this.setCoinsPercentage(0);
     }
     
-
-    // setpercentage(50);
-    // setPercentage(percentagePara) {
-    //     this.percentage = percentagePara; // => 0 .... 5
-    //     let imagePath = this.IMAGES_COINS[this.reolsveImageIndex()];
-    //     this.img = this.imageCache[imagePath];
-    // }
-
-    // reolsveImageIndex() {
-    //     if (this.percentage == 100) {
-    //         return 5;
-    //     } else if (this.percentage > 80) {
-    //         return 4;
-    //     } else if (this.percentage > 60) {
-    //         return 3;
-    //     } else if (this.percentage > 40) {
-    //         return 2;
-    //     } else if (this.percentage > 20) {
-    //         return 1;
-    //     } else {
-    //         return 0;
-    //     }
-    // }
 }
 
 

@@ -64,8 +64,6 @@ class Character extends MovableObject {
     animate() {
 
         setInterval(() => {
-            // this.walking_sound.pause();
-            // this.jumping_sound.pause();
 
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
@@ -110,7 +108,7 @@ class Character extends MovableObject {
             } else {
 
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    // Walk animation
+                    // Walking animation
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }

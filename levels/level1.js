@@ -67,18 +67,34 @@ const allBottles = [
     ...fourthSetOfBottles
 ];
 
+// Function to generate random enemies
+function generateRandomEnemies() {
+    const enemies = [];
+    const enemyTypes = [smallChicken, normalChicken]; // List of enemy types without the final boss
+    const numberOfEnemies = Math.floor(Math.random() * 10) + 5; // Random number of enemies (between 5 and 15)
 
+    for (let i = 0; i < numberOfEnemies; i++) {
+        const EnemyClass = enemyTypes[Math.floor(Math.random() * enemyTypes.length)]; // Random enemy type
+        const xPosition = Math.floor(Math.random() * 3000) + 500; // Random X position (between 500 and 3500)
+        const enemy = new EnemyClass();
+        enemy.x = xPosition; // Set the random X position
+        enemies.push(enemy);
+    }
+
+    // Add the final boss at the end of the level
+    const endboss = new Endboss();
+    endboss.x = 2600; // Set the final boss at a fixed position at the end of the level
+    enemies.push(endboss);
+
+    return enemies;
+}
+
+// Dynamically generate the enemies
+const randomEnemies = generateRandomEnemies();
 
 const level1 = new Level(
-    [
-        new smallChicken(),
-        new smallChicken(),
-        new smallChicken(),
-        new normalChicken(),
-        new normalChicken(),
-        new normalChicken(),
-        new Endboss()
-    ],
+    randomEnemies, // Use the dynamically generated enemies
+
     [
         new Cloud(),
     ],
@@ -105,14 +121,18 @@ const level1 = new Level(
         new BackgroundObject('img/5_background/layers/3_third_layer/2.png', 719 * 3),
         new BackgroundObject('img/5_background/layers/2_second_layer/2.png', 719 * 3),
         new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 719 * 3),
-
     ],
-
-
-    coins = allCoins,
-    bottles = allBottles
-
+    // coins = allCoins,
+    // bottles = allBottles,
+    allCoins,
+    allBottles,
+    allCoins.length, // Total coins
+    allBottles.length // Total bottles
 );
+level1.totalCoins = level1.coins.length; // Set the total coins count in the level object
+level1.totalBottles = level1.bottles.length; // Set the total bottles count the level object
 
-console.log('Coins:', level1.coins); // Gibt das Coins-Array aus
-console.log('Bottles:', level1.bottles); // Gibt das Bottles-Array aus
+console.log('Coins:', level1.coins); // Outputs the coins array
+console.log('Total Coins:', allCoins.length); // Debug log
+console.log('Bottles:', level1.bottles); // Outputs the bottles array
+console.log('Total Bottles:', allBottles.length); // Debug log

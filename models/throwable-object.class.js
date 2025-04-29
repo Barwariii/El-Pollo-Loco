@@ -1,5 +1,6 @@
 class ThrowableObject extends MovableObject {
 
+    hasCollided = false; // New property to prevent multiple collisions
 
     constructor(x, y) {
         super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
@@ -10,14 +11,35 @@ class ThrowableObject extends MovableObject {
         this.throw();
     }
 
-
     throw() {
-        // this.x = x;
-        // this.y = y;
         this.speedY = 25;
         this.applyGravity();
-        setInterval(() => {
+        this.throwInterval = setInterval(() => {
             this.x += 10;
+            this.checkCollisionWithEnemies(); // Check collision with enemies
         }, 25);
+    }
+
+    checkCollisionWithEnemies() {
+        this.world.level.enemies.forEach((enemy, index) => {
+            if (this.isColliding(enemy)) {
+                enemy.energy -= 10; // Reduce the enemy's energy by 10
+                console.log(`Enemy hit! Remaining energy: ${enemy.energy}`);
+                if (enemy.energy <= 0) {
+                    console.log('Enemy defeated!');
+                    this.world.level.enemies.splice(index, 1); // Remove the defeated enemy
+                }
+                this.destroy(); // Remove the bottle after the first collision
+                return; // Exit the loop after the first collision
+            }
+        });
+    }
+
+    destroy() {
+        clearInterval(this.throwInterval); // Stop the bottle's movement
+        const index = this.world.throwableobjects.indexOf(this);
+        if (index > -1) {
+            this.world.throwableobjects.splice(index, 1); // Remove the bottle from the array
+        }
     }
 }

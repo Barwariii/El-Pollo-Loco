@@ -1,4 +1,5 @@
 class Level {
+    character;
     enemies;
     clouds;
     backgroundObjects;
@@ -6,7 +7,8 @@ class Level {
     coins;
     bottles;
 
-    constructor(enemiesPara, cloudsPara, backgroundObjectsPara, coinsPara, bottlesPara) {
+    constructor(enemiesPara, cloudsPara, backgroundObjectsPara, coinsPara, bottlesPara, characterPara) {
+        this.character = characterPara;
         this.enemies = enemiesPara;
         this.clouds = cloudsPara;
         this.backgroundObjects = backgroundObjectsPara;

@@ -13,6 +13,7 @@ class statusBarBottles extends statusBar {
     percentage = 0;
     constructor() {
         super();
+        this.loadImage('img/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png');
         this.loadImages(this.IMAGES);
         this.x = 40;
         this.y = 0;
