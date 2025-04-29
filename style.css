@@ -10,7 +10,75 @@ body {
   background-color: rgb(58,57,55); /*temporary background-color for comfortable coding */
 }
 
+#game-container {
+  position: relative;
+  display: flex;
+}
+
 canvas {
+  width: 720px;
+  height: 480px;
   background-color: black;
-  border: 2px solid rgb(27, 27, 27);
+  /* border: 2px inset rgb(27, 27, 27); */
+}
+
+#start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("img/9_intro_outro_screens/start/startscreen_1.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+#start-button {
+  padding: 10px 20px;
+  font-size: 20px;
+  cursor: pointer;
+  border: inset #c57425  4px;
+  border-radius: 8px;
+  background: linear-gradient(176deg, #ffda07, #ff5300c7);
+}
+
+#start-button:hover {
+  background: linear-gradient(176deg, #ff5300c7, #ffda07);
+  color: white;
+  /* transition: all 0.3s ease-in-out; */
+}
+
+
+#game-over-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0, 0, 0, 0.8); */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 10;
+}
+
+#restart-button {
+  padding: 10px 20px;
+  font-size: 20px;
+  cursor: pointer;
+  border: inset #c57425 4px;
+  border-radius: 8px;
+  background: linear-gradient(176deg, #ffda07, #ff5300c7);
+}
+
+#restart-button:hover {
+  background: linear-gradient(176deg, #ff5300c7, #ffda07);
+  color: white;
 }

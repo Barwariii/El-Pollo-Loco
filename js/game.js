@@ -5,14 +5,30 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
 
+    // Add event listener to the start button
+    const startButton = document.getElementById('start-button');
+    startButton.addEventListener('click', () => {
+        document.getElementById('start-screen').style.display = 'none'; // Hide the start screen
+        startGame(); // Start the game
+    });
 
-    console.log('My charechter is', world.character);
-    
-
+    // Add event listener to the restart button
+    const restartButton = document.getElementById('restart-button');
+    restartButton.addEventListener('click', () => {
+        document.getElementById('game-over-screen').style.display = 'none'; // Hide the game over screen
+        restartGame(); // Restart the game
+    });
 }
 
+function startGame() {
+    world = new World(canvas, keyboard);
+    console.log('Game started!');
+}
+
+function restartGame() {
+    window.location.reload(); // Reload the page to restart the game
+}
 
 window.addEventListener("keydown", (event) => {
     console.log(event.keyCode);

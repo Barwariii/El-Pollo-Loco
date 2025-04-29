@@ -37,9 +37,16 @@
     <h1>El Pollo Loco</h1>
 
 
-    <canvas id="canvas" width="720" height="480">
-
-    </canvas>
+    <div id="game-container">
+        <canvas id="canvas" width="720" height="480"></canvas>
+        <div id="start-screen">
+            <button id="start-button">Start Game</button>
+        </div>
+    </div>
+    <div id="game-over-screen" style="display: none;">
+        <!-- <h1>Game Over</h1> -->
+        <button id="restart-button">New Game</button>
+    </div>
 
 
 </body>

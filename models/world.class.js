@@ -11,11 +11,14 @@ class World {
     statusBarCoins = new statusBarCoins();
     statusBarBottles = new statusBarBottles();
     throwableobjects = [];
+    gameOverScreen = new Image(); // Add game over screen image
+    gameOver = false; // Flag to check if game is over
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // Access canvas on line 10
         this.keyboard = keyboard;
+        this.gameOverScreen.src = 'img/9_intro_outro_screens/game_over/oh no you lost!.png'; // Set game over screen image
         this.draw();
         this.setWorld();
         this.run();
@@ -27,11 +30,15 @@ class World {
 
     run() {
         setInterval(() => {
-            this.checkCollisions();
-            this.checkEnemiesCollisions();
-            this.checkThrowableObject();
-            this.checkCollectables(); // Check for coin collection
-            this.checkCollectableBottles(); // Check for bottle collection
+            if (!this.gameOver) {
+                // this.checkThrowables();
+                this.checkCollectables();
+                this.checkCollectableBottles();
+                this.checkCollisions();
+                this.checkEnemiesCollisions();
+                this.checkThrowableObject();
+                // this.moveCamera();
+            }
         }, 200);
     }
 
@@ -78,10 +85,20 @@ class World {
                         this.character.hit(); // Reduce character's energy
                         this.statusBarHealth.setPercentage(this.character.energy); // Update health status bar
                         console.log('Character got hit by enemy. Remaining energy:', this.character.energy);
+
+                        if (this.character.isDead()) {
+                            this.endgame(); // Trigger game over when character is dead
+                        }
                     }
                 }
             }
         });
+    }
+
+    endgame() {
+        this.gameOver = true; // Set the game over flag to true
+        console.log('Game Over!'); // Log game over message
+        document.getElementById('game-over-screen').style.display = 'flex'; // Show game over screen
     }
 
     // Check if the character is colliding with the enemy and remove it from the level
@@ -114,27 +131,33 @@ class World {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.translate(this.camera_x, 0); // Move camera to the left with the character
+        if (this.gameOver) {
+            this.ctx.drawImage(this.gameOverScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game over screen
+            // return; // Stop drawing if the game is over
+        } else {
 
-        // Enemies for-loop
-        this.addObjectsToMap(this.level.backgroundObjects);
+            this.ctx.translate(this.camera_x, 0); // Move camera to the left with the character
 
-        //* --------- Space for fixed objects ---------
-        this.ctx.translate(-this.camera_x, 0); // Move back
-        // this.addToMap(this.statusBar);
-        this.addToMap(this.statusBarHealth);
-        this.addToMap(this.statusBarCoins);
-        this.addToMap(this.statusBarBottles);
-        this.ctx.translate(this.camera_x, 0); // Move forwards
+            // Enemies for-loop
+            this.addObjectsToMap(this.level.backgroundObjects);
 
-        this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.level.coins);
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.throwableobjects); // throwableobjects is a variable for thrown bottles  
+            //* --------- Space for fixed objects ---------
+            this.ctx.translate(-this.camera_x, 0); // Move back
+            // this.addToMap(this.statusBar);
+            this.addToMap(this.statusBarHealth);
+            this.addToMap(this.statusBarCoins);
+            this.addToMap(this.statusBarBottles);
+            this.ctx.translate(this.camera_x, 0); // Move forwards
 
-        this.ctx.translate(-this.camera_x, 0); // Move camera to the right again with the character
+            this.addObjectsToMap(this.level.clouds);
+            this.addToMap(this.character);
+            this.addObjectsToMap(this.level.enemies);
+            this.addObjectsToMap(this.level.coins);
+            this.addObjectsToMap(this.level.bottles);
+            this.addObjectsToMap(this.throwableobjects); // throwableobjects is a variable for thrown bottles  
+
+            this.ctx.translate(-this.camera_x, 0); // Move camera to the right again with the character
+        }
 
         let self = this; // Store 'this' in a variable because 'this' is not recognized in requestAnimationFrame
         requestAnimationFrame(function () {
