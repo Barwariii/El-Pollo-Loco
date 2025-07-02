@@ -13,19 +13,35 @@ class World {
     throwableobjects = [];
     gameOverScreen = new Image(); // Add game over screen image
     gameOver = false; // Flag to check if game is over
+    gamewinerScreen = new Image(); // Add game win screen image
+    gameWin = false; // Flag to check if game is won
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
-        this.canvas = canvas; // Access canvas on line 10
+        this.canvas = canvas; // Store the canvas element
         this.keyboard = keyboard;
         this.gameOverScreen.src = 'img/9_intro_outro_screens/game_over/oh no you lost!.png'; // Set game over screen image
+        this.gamewinerScreen.src = 'img/9_intro_outro_screens/win/win_2.png'; // Set game win screen image
+        this.level = level1;
+
+        // Assign the world object to all enemies
+        this.level.enemies.forEach(enemy => {
+            enemy.world = this; // Assign the world object to each enemy
+
+            // Call animate() only after assigning the world object
+            if (enemy instanceof Endboss) {
+                enemy.animate();
+            }
+        });
+
+
         this.draw();
         this.setWorld();
         this.run();
     }
 
     setWorld() {
-        this.character.world = this;
+        this.character.world = this; // Assign the world object to the character
     }
 
     run() {
@@ -45,7 +61,7 @@ class World {
     checkThrowableObject() {
         if (this.keyboard.D && this.character.bottles > 0) {
             let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 140);
-            bottle.world = this; // Assign world
+            bottle.world = this; // Assign the world object to the throwable bottle
             this.throwableobjects.push(bottle);
             this.character.bottles--;
             console.log('Bottle thrown! Remaining bottles:', this.character.bottles);
@@ -87,6 +103,7 @@ class World {
                         console.log('Character got hit by enemy. Remaining energy:', this.character.energy);
 
                         if (this.character.isDead()) {
+                            this.gameOver = true; // Set game over flag to true
                             this.endgame(); // Trigger game over when character is dead
                         }
                     }
@@ -95,11 +112,28 @@ class World {
         });
     }
 
+    // endgame() {
+    //     if (this.gameOver = true) {
+    //         // this.gameOver = true; // Set the game over flag to true
+    //         console.log('Game Over!'); // Log game over message
+    //         document.getElementById('gameOverScreen').style.display = 'flex'; // Show game over screen
+    //     } else if (this.gameWin = true) {
+    //         // this.gameWin = true; // Set the game win flag to true
+    //         console.log('You won the game!'); // Log game win message
+    //         document.getElementById('winScreen').style.display = 'flex'; // Show win screen
+    //     }
+
+    // }
     endgame() {
-        this.gameOver = true; // Set the game over flag to true
-        console.log('Game Over!'); // Log game over message
-        document.getElementById('game-over-screen').style.display = 'flex'; // Show game over screen
+        if (this.gameOver === true) { // Korrekte Überprüfung mit ===
+            console.log('Game Over!'); // Log game over message
+            document.getElementById('gameOverScreen').style.display = 'flex'; // Show game over screen
+        } else if (this.gameWin === true) { // Korrekte Überprüfung mit ===
+            console.log('You won the game!'); // Log game win message
+            document.getElementById('winScreen').style.display = 'flex'; // Show win screen
+        }
     }
+
 
     // Check if the character is colliding with the enemy and remove it from the level
     checkEnemiesCollisions() {
@@ -123,7 +157,7 @@ class World {
                 }
 
                 // Character bounces upwards
-                this.character.speedY = 15;
+                this.character.speedY = 0;
             }
         });
     }
@@ -134,6 +168,9 @@ class World {
         if (this.gameOver) {
             this.ctx.drawImage(this.gameOverScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game over screen
             // return; // Stop drawing if the game is over
+        } else if (this.gameWin) {
+            this.ctx.drawImage(this.gamewinerScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game win screen
+            // return; // Stop drawing if the game is won
         } else {
 
             this.ctx.translate(this.camera_x, 0); // Move camera to the left with the character

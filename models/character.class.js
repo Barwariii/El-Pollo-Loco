@@ -51,6 +51,8 @@ class Character extends MovableObject {
     jumping_sound = new Audio('audio/jump.MP3')
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
+        this.walking_sound.volume = 1; // Set volume to 100%
+        this.jumping_sound.volume = 0.1; // Set volume to 50%
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMING);
         this.loadImages(this.IMAGES_DEAD);

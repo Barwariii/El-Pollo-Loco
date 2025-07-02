@@ -25,7 +25,7 @@
     <script src="./models/coins.class.js"></script>
     <script src="./models/bottles.class.js"></script>
     <script src="./models/throwable-object.class.js"></script>
-    
+
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
 
@@ -36,17 +36,43 @@
 
     <h1>El Pollo Loco</h1>
 
-
     <div id="game-container">
         <canvas id="canvas" width="720" height="480"></canvas>
         <div id="start-screen">
-            <button id="start-button">Start Game</button>
+            <button id="startButton">Start Game</button>
+        </div>
+
+        <div class="icons">
+            <div class="full-screen" id="fullScreen">
+                <img src="./img/general_icons/fullscreen.svg" alt="">
+            </div>
+            <div id="volume" class="volume">
+                <img src="./img/general_icons/volume_up_24dp.svg" alt="">
+            </div>
         </div>
     </div>
-    <div id="game-over-screen" style="display: none;">
+    <div id="gameOverScreen" style="display: none;">
         <!-- <h1>Game Over</h1> -->
-        <button id="restart-button">New Game</button>
+        <button id="restartButton" class="restartButton">New Game</button>
     </div>
+    <!-- filepath: x:\Project\12\EL-POLLO-LOCO\index.html -->
+    <div id="winScreen" style="display: none;">
+        <button id="restartButton" class="restartButton">Restart</button>
+    </div>
+
+<div class="directions">
+    <h3>How to Play</h3>
+    <ul>
+        <li><strong>Move Left & Right:</strong> Left & Right Arrow Key</li>
+        <!-- <li><strong>Move Right:</strong> Right Arrow Key</li> -->
+        <li><strong>Jump:</strong>Spacebar</li>
+        <li><strong>Throw Bottle:</strong> D Key (if you have bottles)</li>
+        <li><strong>Collect Coins & Bottles:</strong> Walk over them</li>
+        <li><strong>Defeat Enemies:</strong> Jump on them or throw bottles</li>
+        <li><strong>Goal:</strong> Defeat the Endboss to win!</li>
+    </ul>
+    <p><em>Tip: Avoid enemy attacks and save bottles to defeat the Endboss!</em></p>
+</div>
 
 
 </body>

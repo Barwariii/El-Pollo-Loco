@@ -7,8 +7,22 @@ body {
   /* background-size: 120vw 100vh; */
   /* background-size: cover; */
   /* background-repeat: no-repeat; */
-  background-color: rgb(58,57,55); /*temporary background-color for comfortable coding */
+  background-color: rgb(
+    58,
+    57,
+    55
+  ); /*temporary background-color for comfortable coding */
 }
+
+/* .volume img {
+  position: absolute;
+  right: 30px;
+  top: 20px;
+  fill: black;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+} */
 
 #game-container {
   position: relative;
@@ -38,23 +52,53 @@ canvas {
   z-index: 10;
 }
 
-#start-button {
+#startButton {
+  position: absolute;
+  top: 10%;
   padding: 10px 20px;
   font-size: 20px;
   cursor: pointer;
-  border: inset #c57425  4px;
-  border-radius: 8px;
+  border: inset #f1f1f1  4px;
+  border-radius: 24px;
   background: linear-gradient(176deg, #ffda07, #ff5300c7);
 }
 
-#start-button:hover {
+#startButton:hover {
   background: linear-gradient(176deg, #ff5300c7, #ffda07);
   color: white;
   /* transition: all 0.3s ease-in-out; */
 }
 
 
-#game-over-screen {
+/* Icons div - Fullscreen and Volume Style Section */
+.icons .full-screen {
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+}
+
+.icons .full-screen img {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+}
+
+
+/* Volume Control Style Section */
+.icons .volume img {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  fill: black;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+#gameOverScreen {
   position: absolute;
   top: 0;
   left: 0;
@@ -69,7 +113,22 @@ canvas {
   z-index: 10;
 }
 
-#restart-button {
+#winScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0, 0, 0, 0.8); */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 10;
+}
+
+#restartButton {
   padding: 10px 20px;
   font-size: 20px;
   cursor: pointer;
@@ -78,7 +137,44 @@ canvas {
   background: linear-gradient(176deg, #ffda07, #ff5300c7);
 }
 
-#restart-button:hover {
+#restartButton:hover {
   background: linear-gradient(176deg, #ff5300c7, #ffda07);
   color: white;
+}
+
+
+/* how to play styling */
+
+.directions {
+  max-width: 400px;
+  margin: 30px auto 0 auto;
+  padding: 10px 30px;
+  background: rgba(34, 34, 34, 0.85);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.3);
+  color: #ffe7b2;
+  /* font-size: 1.1em; */
+  border: 2px solid #ffda07;
+}
+
+.directions h3 {
+  margin-top: 0;
+  color: #ffda07;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.directions ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.directions li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.directions em {
+  color: #ff5300;
+  font-style: italic;
 }

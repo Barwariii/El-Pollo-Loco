@@ -82,7 +82,7 @@ function generateRandomEnemies() {
     }
 
     // Add the final boss at the end of the level
-    const endboss = new Endboss();
+    const endboss = new Endboss(); // Create the final boss
     endboss.x = 2600; // Set the final boss at a fixed position at the end of the level
     enemies.push(endboss);
 

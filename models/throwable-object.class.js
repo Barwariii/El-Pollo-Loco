@@ -27,7 +27,10 @@ class ThrowableObject extends MovableObject {
                 console.log(`Enemy hit! Remaining energy: ${enemy.energy}`);
                 if (enemy.energy <= 0) {
                     console.log('Enemy defeated!');
-                    this.world.level.enemies.splice(index, 1); // Remove the defeated enemy
+                    // this.world.level.enemies.splice(index, 1); // Remove the defeated enemy
+                    if (!(enemy instanceof Endboss)) {
+                        this.world.level.enemies.splice(index, 1); // Nur normale Gegner sofort entfernen
+                    }
                 }
                 this.destroy(); // Remove the bottle after the first collision
                 return; // Exit the loop after the first collision

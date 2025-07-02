@@ -3,7 +3,7 @@ class MovableObject extends DrawableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
-    energy = 10;
+    energy = 100;
     lastHit = 0;
     coins = 0; // Initialize coins property
     bottles = 0; // Initialize bottles property
@@ -106,5 +106,10 @@ class MovableObject extends DrawableObject {
 
     jump() {
         this.speedY = 30;
+    }
+
+    // Neue Methode onAddedToWorld
+    onAddedToWorld(world) {
+        this.world = world;  // Setzt die Welt (falls erforderlich)
     }
 }
