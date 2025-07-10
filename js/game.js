@@ -16,6 +16,17 @@ function init() {
     fullscreen = document.getElementById('fullScreen'); // Initialize the fullscreen variable here
     fullscreen.addEventListener('click', aktiveFullscreen);
 
+    // Musik-Status und Icon aus localStorage laden
+    const musicMuted = localStorage.getItem('musicMuted') === 'true';
+    const volumeControl = document.getElementById('volume').querySelector('img');
+    if (musicMuted) {
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        volumeControl.src = 'img/general_icons/no_sound_24dp.svg';
+    } else {
+        volumeControl.src = 'img/general_icons/volume_up_24dp.svg';
+    }
+
     // Fullscreen-Icon ausblenden
     // document.getElementById('fullScreen').style.display = 'none';
 
@@ -45,7 +56,11 @@ function init() {
 
 function startGame() {
     isGameStarted = true; // Mark the game as started
-    backgroundMusic.play(); // Start background music
+    // backgroundMusic.play(); // Start background music
+    // Musik nur abspielen, wenn nicht gemutet
+    if (localStorage.getItem('musicMuted') !== 'true') {
+        backgroundMusic.play();
+    }
     world = new World(canvas, keyboard);
     fullscreen.style.display = 'flex'; // Show the fullscreen button
     console.log('Game started!');
@@ -67,6 +82,14 @@ function restartGame() {
         }
     }
 
+        backgroundMusic.currentTime = 0;
+    // Musik nur abspielen, wenn nicht gemutet
+    if (localStorage.getItem('musicMuted') !== 'true') {
+        backgroundMusic.play();
+    } else {
+        backgroundMusic.pause();
+    }
+
     // Welt und Status zurücksetzen
     world = new World(canvas, keyboard);
 
@@ -75,9 +98,9 @@ function restartGame() {
     world.statusBarCoins.setCoinsPercentage(0);
     world.statusBarBottles.setBottlePercentage(0);
 
-    // Musik neu starten, falls gewünscht
-    backgroundMusic.currentTime = 0;
-    backgroundMusic.play();
+    // // Musik neu starten, falls gewünscht
+    // backgroundMusic.currentTime = 0;
+    // backgroundMusic.play();
 
     // Start- und Endbildschirme ausblenden
     document.getElementById('gameOverScreen').style.display = 'none';
@@ -116,18 +139,33 @@ function winGame() {
 //     }
 // }
 
+// function muteBackgroundMusic() {
+//     let volumeControl = document.getElementById('volume').querySelector('img');
+//     if (backgroundMusic.paused) {
+//         // backgroundMusic.play(); // Play the music if it's paused
+//         if (isGameStarted) {
+//             backgroundMusic.play(); // Play the music only if the game has started
+//         }
+//         volumeControl.src = 'img/general_icons/volume_up_24dp.svg'; // Change icon to "volume up"
+//     } else {
+//         backgroundMusic.pause(); // Pause the music if it's playing
+//         volumeControl.src = 'img/general_icons/no_sound_24dp.svg'; // Change icon to "no sound"
+//         localStorage.setItem('musicMuted', 'true'); // <-- speichern
+//     }
+// }
+
 function muteBackgroundMusic() {
     let volumeControl = document.getElementById('volume').querySelector('img');
     if (backgroundMusic.paused) {
-        // backgroundMusic.play(); // Play the music if it's paused
         if (isGameStarted) {
-            backgroundMusic.play(); // Play the music only if the game has started
+            backgroundMusic.play();
         }
-        volumeControl.src = 'img/general_icons/volume_up_24dp.svg'; // Change icon to "volume up"
+        volumeControl.src = 'img/general_icons/volume_up_24dp.svg';
+        localStorage.setItem('musicMuted', 'false');
     } else {
-        backgroundMusic.pause(); // Pause the music if it's playing
-        volumeControl.src = 'img/general_icons/no_sound_24dp.svg'; // Change icon to "no sound"
-        localStorage.setItem('musicMuted', 'true'); // <-- speichern
+        backgroundMusic.pause();
+        volumeControl.src = 'img/general_icons/no_sound_24dp.svg';
+        localStorage.setItem('musicMuted', 'true');
     }
 }
 
