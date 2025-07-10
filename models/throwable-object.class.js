@@ -25,6 +25,9 @@ class ThrowableObject extends MovableObject {
             if (this.isColliding(enemy)) {
                 enemy.energy -= 10; // Reduce the enemy's energy by 10
                 console.log(`Enemy hit! Remaining energy: ${enemy.energy}`);
+                if (enemy instanceof Endboss && !enemy.isDead) {
+                    enemy.state = 'hurt'; // <-- Hurt-Animation 
+                }
                 if (enemy.energy <= 0) {
                     console.log('Enemy defeated!');
                     // this.world.level.enemies.splice(index, 1); // Remove the defeated enemy

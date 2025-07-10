@@ -1,3 +1,5 @@
+function createLevel1() {
+
 //! coins section
 // Reset the counter for the first set of coins
 Coins.count = 0;
@@ -92,7 +94,13 @@ function generateRandomEnemies() {
 // Dynamically generate the enemies
 const randomEnemies = generateRandomEnemies();
 
+
+
 const level1 = new Level(
+// let level1;
+// function initLevel() {
+
+// level1 = new Level(
     randomEnemies, // Use the dynamically generated enemies
 
     [
@@ -129,10 +137,14 @@ const level1 = new Level(
     allCoins.length, // Total coins
     allBottles.length // Total bottles
 );
+
 level1.totalCoins = level1.coins.length; // Set the total coins count in the level object
 level1.totalBottles = level1.bottles.length; // Set the total bottles count the level object
+return level1;
+}
 
-console.log('Coins:', level1.coins); // Outputs the coins array
-console.log('Total Coins:', allCoins.length); // Debug log
-console.log('Bottles:', level1.bottles); // Outputs the bottles array
-console.log('Total Bottles:', allBottles.length); // Debug log
+
+// console.log('Coins:', level1.coins); // Outputs the coins array
+// console.log('Total Coins:', allCoins.length); // Debug log
+// console.log('Bottles:', level1.bottles); // Outputs the bottles array
+// console.log('Total Bottles:', allBottles.length); // Debug log

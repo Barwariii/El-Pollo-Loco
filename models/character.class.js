@@ -9,6 +9,18 @@ class Character extends MovableObject {
         left: 4,
         right: 9,
     };
+    IMAGES_IDLE = [
+        'img/2_character_pepe/1_idle/idle/I-1.png',
+        'img/2_character_pepe/1_idle/idle/I-2.png',
+        'img/2_character_pepe/1_idle/idle/I-3.png',
+        'img/2_character_pepe/1_idle/idle/I-4.png',
+        'img/2_character_pepe/1_idle/idle/I-5.png',
+        'img/2_character_pepe/1_idle/idle/I-6.png',
+        'img/2_character_pepe/1_idle/idle/I-7.png',
+        'img/2_character_pepe/1_idle/idle/I-8.png',
+        'img/2_character_pepe/1_idle/idle/I-9.png',
+        'img/2_character_pepe/1_idle/idle/I-10.png',
+    ];
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -53,6 +65,7 @@ class Character extends MovableObject {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.walking_sound.volume = 1; // Set volume to 100%
         this.jumping_sound.volume = 0.1; // Set volume to 50%
+        this.loadImages(this.IMAGES_IDLE);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMING);
         this.loadImages(this.IMAGES_DEAD);
@@ -63,13 +76,17 @@ class Character extends MovableObject {
         this.animate();
     }
 
+    lastMoveTime = Date.now(); // Zeit des letzten Bewegens
+
     animate() {
 
         setInterval(() => {
+            let moved = false;
 
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
+                moved = true; // Markiert, dass eine Bewegung stattgefunden hat
                 if (this.world.keyboard.RIGHT && !this.isAboveGround()) {
                     this.walking_sound.play();
                 }
@@ -78,9 +95,15 @@ class Character extends MovableObject {
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
+                moved = true; // Markiert, dass eine Bewegung stattgefunden hat
                 if (this.world.keyboard.LEFT && !this.isAboveGround()) {
                     this.walking_sound.play();
                 }
+            }
+
+            // Zeit aktualisieren, wenn bewegt
+            if (moved) {
+                this.lastMoveTime = Date.now();
             }
 
             // If no key is pressed (no movement)
@@ -101,18 +124,23 @@ class Character extends MovableObject {
 
         setInterval(() => {
 
+            const now = Date.now();
+            const idleTime = 2000; // 2 Sekunden
+
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMING);
-            } else {
-
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    // Walking animation
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
+            } else if (
+                (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) &&
+                now - this.lastMoveTime > idleTime
+            ) {
+                // Idle-Animation, wenn länger als idleTime keine Bewegung
+                this.playAnimation(this.IMAGES_IDLE);
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.IMAGES_WALKING);
             }
         }, 50);
     }

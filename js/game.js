@@ -16,8 +16,8 @@ function init() {
     fullscreen = document.getElementById('fullScreen'); // Initialize the fullscreen variable here
     fullscreen.addEventListener('click', aktiveFullscreen);
 
-        // Fullscreen-Icon ausblenden
-        // document.getElementById('fullScreen').style.display = 'none';
+    // Fullscreen-Icon ausblenden
+    // document.getElementById('fullScreen').style.display = 'none';
 
     // Add event listener to the start button
     const startButton = document.getElementById('startButton');
@@ -33,7 +33,7 @@ function init() {
         restartGame(); // Restart the game
     });
 
-        // Gemeinsamer Event-Listener für alle Restart-Buttons
+    // Gemeinsamer Event-Listener für alle Restart-Buttons
     document.querySelectorAll('.restartButton').forEach(btn => {
         btn.addEventListener('click', () => {
             document.getElementById('gameOverScreen').style.display = 'none';
@@ -51,9 +51,42 @@ function startGame() {
     console.log('Game started!');
 }
 
+// function restartGame() {
+//     window.location.reload(); // Reload the page to restart the game
+// }
+
+// ...existing code...
+
 function restartGame() {
-    window.location.reload(); // Reload the page to restart the game
+    // Stoppe alle Intervalle und Animationen der alten Welt (falls vorhanden)
+    if (world) {
+        if (typeof world.stopAllIntervals === 'function') world.stopAllIntervals();
+        // Falls du später noch cancelAnimationFrame nutzt, auch das hier stoppen!
+        if (world.ctx) {
+            world.ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // Welt und Status zurücksetzen
+    world = new World(canvas, keyboard);
+
+    // Statusleisten zurücksetzen
+    world.statusBarHealth.setPercentage(100);
+    world.statusBarCoins.setCoinsPercentage(0);
+    world.statusBarBottles.setBottlePercentage(0);
+
+    // Musik neu starten, falls gewünscht
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play();
+
+    // Start- und Endbildschirme ausblenden
+    document.getElementById('gameOverScreen').style.display = 'none';
+    document.getElementById('winScreen').style.display = 'none';
+
+    isGameStarted = true;
 }
+
+// ...existing code...
 
 
 function winGame() {
@@ -94,6 +127,7 @@ function muteBackgroundMusic() {
     } else {
         backgroundMusic.pause(); // Pause the music if it's playing
         volumeControl.src = 'img/general_icons/no_sound_24dp.svg'; // Change icon to "no sound"
+        localStorage.setItem('musicMuted', 'true'); // <-- speichern
     }
 }
 
@@ -114,59 +148,59 @@ function aktiveFullscreen() {
 
 window.addEventListener("keydown", (event) => {
     console.log(event.keyCode);
-    
-    if(event.keyCode == 39) {
+
+    if (event.keyCode == 39) {
         keyboard.RIGHT = true;
     }
 
-    if(event.keyCode == 37) {
+    if (event.keyCode == 37) {
         keyboard.LEFT = true;
     }
 
-    if(event.keyCode == 38) {
+    if (event.keyCode == 38) {
         keyboard.UP = true;
     }
 
-    if(event.keyCode == 40) {
+    if (event.keyCode == 40) {
         keyboard.DOWN = true;
     }
 
-    if(event.keyCode == 32) {
+    if (event.keyCode == 32) {
         keyboard.SPACE = true;
     }
 
-    if(event.keyCode == 68) {
+    if (event.keyCode == 68) {
         keyboard.D = true;
     }
     // console.log(event);
-    
+
 });
 
 
 window.addEventListener("keyup", (event) => {
-    if(event.keyCode == 39) {
+    if (event.keyCode == 39) {
         keyboard.RIGHT = false;
     }
 
-    if(event.keyCode == 37) {
+    if (event.keyCode == 37) {
         keyboard.LEFT = false;
     }
 
-    if(event.keyCode == 38) {
+    if (event.keyCode == 38) {
         keyboard.UP = false;
     }
 
-    if(event.keyCode == 40) {
+    if (event.keyCode == 40) {
         keyboard.DOWN = false;
     }
 
-    if(event.keyCode == 32) {
+    if (event.keyCode == 32) {
         keyboard.SPACE = false;
     }
 
-    if(event.keyCode == 68) {
+    if (event.keyCode == 68) {
         keyboard.D = false;
     }
     // console.log(event);
-    
+
 });

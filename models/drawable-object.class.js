@@ -52,5 +52,28 @@ loadImages(arr) {
         this.imageCache[path] = img;
     });
 }
+
+
+isCollidingRedFrame(other) {
+    const a = {
+        left: this.x + (this.offset?.left || 0),
+        right: this.x + this.width - (this.offset?.right || 0),
+        top: this.y + (this.offset?.top || 0),
+        bottom: this.y + this.height - (this.offset?.bottom || 0)
+    };
+    const b = {
+        left: other.x + (other.offset?.left || 0),
+        right: other.x + other.width - (other.offset?.right || 0),
+        top: other.y + (other.offset?.top || 0),
+        bottom: other.y + other.height - (other.offset?.bottom || 0)
+    };
+    return (
+        a.right > b.left &&
+        a.left < b.right &&
+        a.bottom > b.top &&
+        a.top < b.bottom
+    );
+}
+
     
 }

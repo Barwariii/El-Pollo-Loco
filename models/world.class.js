@@ -1,7 +1,9 @@
 class World {
 
-    character = new Character();
-    level = level1;
+    intervals = []; // <-- NEU
+
+    // character = new Character();
+    // level = level1;
     canvas;
     ctx;
     keyboard;
@@ -22,7 +24,12 @@ class World {
         this.keyboard = keyboard;
         this.gameOverScreen.src = 'img/9_intro_outro_screens/game_over/oh no you lost!.png'; // Set game over screen image
         this.gamewinerScreen.src = 'img/9_intro_outro_screens/win/win_2.png'; // Set game win screen image
-        this.level = level1;
+        // this.level = level1;
+        this.level = createLevel1(); // <-- Level NEU erzeugen!
+
+        // Character erst jetzt erzeugen und die Referenz setzen!
+        this.character = new Character();
+        this.character.world = this;
 
         // Assign the world object to all enemies
         this.level.enemies.forEach(enemy => {
@@ -45,7 +52,7 @@ class World {
     }
 
     run() {
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             if (!this.gameOver) {
                 // this.checkThrowables();
                 this.checkCollectables();
@@ -56,6 +63,12 @@ class World {
                 // this.moveCamera();
             }
         }, 200);
+        this.intervals.push(intervalId); // <-- Speichern
+    }
+
+        stopAllIntervals() {
+        this.intervals.forEach(id => clearInterval(id));
+        this.intervals = [];
     }
 
     checkThrowableObject() {
@@ -71,10 +84,11 @@ class World {
         }
     }
 
+
     // Check if the character is colliding with the coin and remove it from the level
     checkCollectables() {
         this.level.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
+            if (this.character.isCollidingRedFrame(coin)) {
                 this.level.coins.splice(index, 1); // Remove the coin from the level
                 this.character.collectCoin(); // Update the coin count and status bar
             }
