@@ -11,22 +11,19 @@ class Bottles extends MovableObject {
         right: 10,
     };
 
-
     IMAGES_BOTTOLS = [
         'img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
     ];
 
+    bottle_sound = new Audio('audio/bottle-sound.mp3');
 
     constructor(baseOffset = 0) {
         super().loadImage('img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
         this.loadImages(this.IMAGES_BOTTOLS);
-
+        this.bottle_sound.volume = 1; // Set volume to 10%
+        allSounds.push(this.bottle_sound);
 
         this.x = baseOffset + Math.floor(Math.random()* 500) + 200;
-
-        // Set each coin’s position based on the count
-        // Set each coin’s x position based on the count
-        // this.x = baseOffset + Bottles.count * (300);  // Adjust `10` to change spacing
 
         // Increment the counter for the next coin
         Bottles.count++;

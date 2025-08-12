@@ -8,13 +8,18 @@ class MovableObject extends DrawableObject {
     coins = 0; // Initialize coins property
     bottles = 0; // Initialize bottles property
 
-
     applyGravity() {
-        setInterval(() => {
+        this.gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+            } else {
+            // The character is now on the ground here!
+            this.speedY = 0;
+            if (this instanceof Character) {
+                this.killEnemyOnJump = true; // Reactivation Killing for the character.
             }
+        }
         }, 1000 / 25);
     }
 
@@ -26,8 +31,6 @@ class MovableObject extends DrawableObject {
         }
     }
 
-
-    // character.isColliding(chikcen);  Kollisionsberechnung
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
@@ -38,32 +41,21 @@ class MovableObject extends DrawableObject {
 
     collectCoin() {
         this.coins += 1;
-        console.log('Coins collected:', this.coins); // Debug log
         if (this.world) {
-            console.log('Total Coins in Level:', this.world.level.totalCoins); // Debug log
             const totalCoins = this.world.level.totalCoins || 1; // Fallback to 1
-            // const percentage = (this.coins / totalCoins) * 100;
             const coinsPercentage = Math.min(100, Math.round((this.coins / totalCoins) * 100));
 
-            console.log('Calculated coinsPercentage:', coinsPercentage); // Debug log
             this.world.statusBarCoins.setCoinsPercentage(coinsPercentage);
-        } else {
-            console.log('World is not defined!');
         }
     }
 
 
     collectBottle() {
         this.bottles += 1;
-        console.log('Bottles collected:', this.bottles); // Debug log
         if (this.world) {
-            console.log('Total bottles in Level:', this.world.level.totalBottles); // Debug log
             const totalBottles = this.world.level.totalBottles || 1; // Fallback to 1
             const bottlesPercentage = Math.min(100, Math.round((this.bottles / totalBottles) * 100));
-            console.log('Calculated bottlesPercentage:', bottlesPercentage); // Debug log
             this.world.statusBarBottles.setBottlePercentage(bottlesPercentage);
-        } else {
-            console.log('World is not defined!');
         }
     }
 
@@ -86,7 +78,6 @@ class MovableObject extends DrawableObject {
         return this.energy <= 0;
     }
 
-
     playAnimation(images) {
         let i = this.currentImage % images.length; // let i = 0 % 6; 
         let path = images[i];
@@ -98,18 +89,19 @@ class MovableObject extends DrawableObject {
         this.x += this.speed;
     }
 
-
     moveLeft() {
         this.x -= this.speed;
     }
-
 
     jump() {
         this.speedY = 30;
     }
 
-    // Neue Methode onAddedToWorld
+    /**
+     * Called when the object is added to the world.
+     * New method onAddedToWorld. 
+     */
     onAddedToWorld(world) {
-        this.world = world;  // Setzt die Welt (falls erforderlich)
+        this.world = world;  // Set the world (if required).
     }
 }

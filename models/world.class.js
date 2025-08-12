@@ -1,9 +1,7 @@
 class World {
 
-    intervals = []; // <-- NEU
+    intervals = []; // <-- Array to store intervals
 
-    // character = new Character();
-    // level = level1;
     canvas;
     ctx;
     keyboard;
@@ -17,17 +15,17 @@ class World {
     gameOver = false; // Flag to check if game is over
     gamewinerScreen = new Image(); // Add game win screen image
     gameWin = false; // Flag to check if game is won
+    ended = false;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas; // Store the canvas element
         this.keyboard = keyboard;
-        this.gameOverScreen.src = 'img/9_intro_outro_screens/game_over/oh no you lost!.png'; // Set game over screen image
-        this.gamewinerScreen.src = 'img/9_intro_outro_screens/win/win_2.png'; // Set game win screen image
-        // this.level = level1;
-        this.level = createLevel1(); // <-- Level NEU erzeugen!
 
-        // Character erst jetzt erzeugen und die Referenz setzen!
+        this.level = createLevel1(); // <-- Create new level!
+
+
+        // Only create character now and set the reference!
         this.character = new Character();
         this.character.world = this;
 
@@ -41,7 +39,6 @@ class World {
             }
         });
 
-
         this.draw();
         this.setWorld();
         this.run();
@@ -53,39 +50,48 @@ class World {
 
     run() {
         const intervalId = setInterval(() => {
-            if (!this.gameOver) {
-                // this.checkThrowables();
+            if (this.ended) return;
+            if (!this.gameOver && !this.gameWin) {
                 this.checkCollectables();
                 this.checkCollectableBottles();
                 this.checkCollisions();
                 this.checkEnemiesCollisions();
                 this.checkThrowableObject();
-                // this.moveCamera();
             }
         }, 200);
-        this.intervals.push(intervalId); // <-- Speichern
+        this.intervals.push(intervalId); // <-- store the interval ID
     }
 
-        stopAllIntervals() {
+    endState(state) {
+        if (this.ended) return;
+        this.ended =true;
+        this.gameWin = state === 'win';
+        this.gameOver = state === 'lose'
+        this.endgame();
+    }
+
+    stopAllIntervals() {
         this.intervals.forEach(id => clearInterval(id));
         this.intervals = [];
     }
 
     checkThrowableObject() {
-        if (this.keyboard.D && this.character.bottles > 0) {
+        if (this.keyboard.wasDPressOnce() && this.character.bottles > 0) {
             let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 140);
             bottle.world = this; // Assign the world object to the throwable bottle
             this.throwableobjects.push(bottle);
             this.character.bottles--;
-            console.log('Bottle thrown! Remaining bottles:', this.character.bottles);
+
             this.statusBarBottles.setBottlePercentage(
                 Math.min(100, Math.round((this.character.bottles / this.level.totalBottles) * 100))
             );
+            this.character.lastMoveTime = Date.now();
         }
     }
 
-
-    // Check if the character is colliding with the coin and remove it from the level
+    /**
+     * Check if the character is colliding with the coin and remove it from the level
+     */
     checkCollectables() {
         this.level.coins.forEach((coin, index) => {
             if (this.character.isCollidingRedFrame(coin)) {
@@ -95,7 +101,9 @@ class World {
         });
     }
 
-    // Check if the character is colliding with the bottle and remove it from the level
+    /**
+     * Check if the character is colliding with the Bottles and remove it from the level
+     */
     checkCollectableBottles() {
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
@@ -107,6 +115,7 @@ class World {
 
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
+            if (this.gameWin || this.gameOver) return;
             if (this.character.isColliding(enemy) && enemy.energy > 0) {
                 // Check if the collision is not from above
                 if (this.character.speedY >= 0) {
@@ -114,11 +123,11 @@ class World {
                     if (currentTime - this.character.lastHit > 1000) { // Ensure 1-second cooldown between hits
                         this.character.hit(); // Reduce character's energy
                         this.statusBarHealth.setPercentage(this.character.energy); // Update health status bar
-                        console.log('Character got hit by enemy. Remaining energy:', this.character.energy);
 
                         if (this.character.isDead()) {
-                            this.gameOver = true; // Set game over flag to true
-                            this.endgame(); // Trigger game over when character is dead
+                            this.endState('lose');
+                            // this.gameOver = true; // Set game over flag to true
+                            // this.endgame(); // Trigger game over when character is dead
                         }
                     }
                 }
@@ -126,65 +135,86 @@ class World {
         });
     }
 
-    // endgame() {
-    //     if (this.gameOver = true) {
-    //         // this.gameOver = true; // Set the game over flag to true
-    //         console.log('Game Over!'); // Log game over message
-    //         document.getElementById('gameOverScreen').style.display = 'flex'; // Show game over screen
-    //     } else if (this.gameWin = true) {
-    //         // this.gameWin = true; // Set the game win flag to true
-    //         console.log('You won the game!'); // Log game win message
-    //         document.getElementById('winScreen').style.display = 'flex'; // Show win screen
-    //     }
 
-    // }
-    endgame() {
-        if (this.gameOver === true) { // Korrekte Überprüfung mit ===
-            console.log('Game Over!'); // Log game over message
-            document.getElementById('gameOverScreen').style.display = 'flex'; // Show game over screen
-        } else if (this.gameWin === true) { // Korrekte Überprüfung mit ===
-            console.log('You won the game!'); // Log game win message
-            document.getElementById('winScreen').style.display = 'flex'; // Show win screen
+        endgame() {
+        // 1. stop world loops
+        this.stopAllIntervals();
+        
+        // 2. stop enemy animations and movements
+        this.level.enemies.forEach(enemy => {
+            if (enemy.animationInterval) clearInterval(enemy.animationInterval);
+            if (enemy.movementInterval) clearInterval(enemy.movementInterval);
+        });
+        // 3. clear enemy list
+        this.level.enemies.length = 0;
+
+        // 4. stop throwable object loops and clear
+        this.throwableobjects.forEach(obj => {
+            if (obj.throwInterval) clearInterval(obj.throwInterval);
+        });
+        this.throwableobjects.length = 0;
+
+        // 5. stop character gravity
+        if (this.character.gravityInterval) clearInterval(this.character.gravityInterval);
+
+        // 6. pause music and hide controls
+        backgroundMusic.pause();
+        document.querySelector('.mobile-controls').classList.add('hidden-controls');
+
+        // 7. show correct screen
+        if (this.gameOver) {
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        } else if (this.gameWin) {
+            document.getElementById('winScreen').style.display = 'flex';
         }
     }
 
-
-    // Check if the character is colliding with the enemy and remove it from the level
     checkEnemiesCollisions() {
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && this.character.speedY < 0 && enemy.energy > 0) {
-                // Enemy loses energy only when hit from above
-                enemy.energy -= 5;
-                console.log('Collision with enemy, remaining energy:', enemy.energy);
+        const margin = 15; // Small margin to check that the descent is really from above.
+        this.level.enemies.some((enemy) => {
+            const characterBottom = this.character.y + this.character.height;
+            const enemyTop = enemy.y;
+
+            const isJumpKill =
+                this.character.isColliding(enemy) &&
+                (characterBottom > enemyTop) &&
+                this.character.speedY < 0 &&
+                enemy.energy > 0 &&
+                !(enemy instanceof Endboss) &&
+                this.character.killEnemyOnJump;
+
+            if (isJumpKill) {
+                enemy.energy -= 200;
 
                 if (enemy.energy <= 0) {
-                    console.log('Enemy defeated!');
-                    // Add code here to remove or deactivate the enemy
-                    // Remove the enemy after 2 seconds
                     setTimeout(() => {
-                        const enemyIndex = this.level.enemies.indexOf(enemy); // Get the current index of the enemy
-                        if (enemyIndex > -1) { // Ensure the enemy still exists
-                            this.level.enemies.splice(enemyIndex, 1); // Remove the enemy from the array
-                            console.log('Enemy removed from the game.');
+                        const enemyIndex = this.level.enemies.indexOf(enemy);
+                        if (enemyIndex > -1) {
+                            this.level.enemies.splice(enemyIndex, 1);
                         }
                     }, 2000);
                 }
 
-                // Character bounces upwards
                 this.character.speedY = 0;
+                this.character.killEnemyOnJump = false; // Prevents killing another enemy until jumping again.
+                return true; // Stops at the first enemy that is killed.
             }
+            return false;
         });
     }
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         if (this.gameOver) {
             this.ctx.drawImage(this.gameOverScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game over screen
-            // return; // Stop drawing if the game is over
+            console.log("DRAW:", "gameWin", this.gameWin, "gameOver", this.gameOver);
+            return; // WICHTIG: Kein requestAnimationFrame mehr!
         } else if (this.gameWin) {
             this.ctx.drawImage(this.gamewinerScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game win screen
-            // return; // Stop drawing if the game is won
+            console.log("DRAW:", "gameWin", this.gameWin, "gameOver", this.gameOver);
+            return; // WICHTIG: Kein requestAnimationFrame mehr!
         } else {
 
             this.ctx.translate(this.camera_x, 0); // Move camera to the left with the character
@@ -194,7 +224,6 @@ class World {
 
             //* --------- Space for fixed objects ---------
             this.ctx.translate(-this.camera_x, 0); // Move back
-            // this.addToMap(this.statusBar);
             this.addToMap(this.statusBarHealth);
             this.addToMap(this.statusBarCoins);
             this.addToMap(this.statusBarBottles);
@@ -226,10 +255,9 @@ class World {
         if (mo.otherDirection) {
             this.flipImage(mo);
         }
-        // this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
-        mo.drawRedFrame(this.ctx);
+        // mo.drawFrame(this.ctx);
+        // mo.drawRedFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);
@@ -247,5 +275,4 @@ class World {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
-
 }

@@ -1,7 +1,7 @@
 class smallChicken extends MovableObject {
     height = 65;
     width = 65;
-    y = 360;
+    y = 375;
     energy = 5;
     offset = {
         top: 60,
@@ -31,6 +31,7 @@ class smallChicken extends MovableObject {
         this.animate();
     }
 
+    
     animate() {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
@@ -42,9 +43,10 @@ class smallChicken extends MovableObject {
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-        }, 200);
-    
+        }, 50);
+
         this.movementInterval = setInterval(() => {
+            if (this.world && (this.world.gameWin || this.world.gameOver)) return;
             if (!this.isDead()) {
                 this.moveLeft();
             }

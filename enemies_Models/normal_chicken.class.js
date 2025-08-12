@@ -1,13 +1,13 @@
 class normalChicken extends MovableObject {
     height = 105;
     width = 105;
-    y = 325;
+    y = 340;
     energy = 10;
     offset = {
-        top: 4,
-        bottom: 9,
-        left: 3,
-        right: 5,
+        top: 10,
+        bottom: 15,
+        left: 6,
+        right: 10,
     };
 
     IMAGES_WALKING = [
@@ -35,13 +35,16 @@ class normalChicken extends MovableObject {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD); // Play death animation
+                // console.log('Chicken is dead');
             } else {
                 this.playAnimation(this.IMAGES_WALKING); // Play walking animation
+                console.log('Chicken is walking');
             }
-        }, 200); // The animation changes every 200ms
+        }, 100); // The animation changes every 200ms
 
         // Movement: Chickens continuously move to the left as long as they are not dead
         this.movementInterval = setInterval(() => {
+            if (this.world && (this.world.gameWin || this.world.gameOver)) return;
             if (!this.isDead()) {
                 this.moveLeft(); // Move only if the chicken is alive
             }

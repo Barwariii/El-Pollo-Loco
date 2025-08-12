@@ -1,14 +1,15 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let allSounds = [];
 
 let backgroundMusic = new Audio('audio/background-music-quick-getaway-game.mp3');
 backgroundMusic.loop = true; // Loop the background music
-backgroundMusic.volume = 0.1; // Set volume to 10%
+backgroundMusic.volume = 0.05; // Set volume to 10%
+allSounds.push(backgroundMusic);
 
 let isGameStarted = false; // Variable to track if the game has started
-
 let fullscreen; // Variable for the fullscreen element
+
 
 function init() {
     canvas = document.getElementById('canvas');
@@ -16,8 +17,13 @@ function init() {
     fullscreen = document.getElementById('fullScreen'); // Initialize the fullscreen variable here
     fullscreen.addEventListener('click', aktiveFullscreen);
 
-    // Musik-Status und Icon aus localStorage laden
+
+    /**
+     * Load music status and icon from localStorage.
+     */
     const musicMuted = localStorage.getItem('musicMuted') === 'true';
+    allSounds.forEach(snd => snd.muted = musicMuted);
+    backgroundMusic.muted = musicMuted;
     const volumeControl = document.getElementById('volume').querySelector('img');
     if (musicMuted) {
         backgroundMusic.pause();
@@ -27,143 +33,137 @@ function init() {
         volumeControl.src = 'img/general_icons/volume_up_24dp.svg';
     }
 
-    // Fullscreen-Icon ausblenden
-    // document.getElementById('fullScreen').style.display = 'none';
 
-    // Add event listener to the start button
+    /**
+     * Add event listener to the start button
+     */
     const startButton = document.getElementById('startButton');
     startButton.addEventListener('click', () => {
         document.getElementById('start-screen').style.display = 'none'; // Hide the start screen
         startGame(); // Start the game
     });
 
-    // Add event listener to the restart button
+
+    /**
+     * Add event listener to the restart button
+     */
     const restartButton = document.getElementById('restartButton');
     restartButton.addEventListener('click', () => {
         document.getElementById('gameOverScreen').style.display = 'none'; // Hide the game over screen
         restartGame(); // Restart the game
     });
 
-    // Gemeinsamer Event-Listener für alle Restart-Buttons
-    document.querySelectorAll('.restartButton').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.getElementById('gameOverScreen').style.display = 'none';
-            document.getElementById('winScreen').style.display = 'none';
-            restartGame();
-        });
+
+    /**
+     * event listener for restart and new game buttons.
+     */
+  document.getElementById('newGameButton')
+    .addEventListener('click', () => {
+      document.getElementById('gameOverScreen').style.display = 'none';
+      restartGame();
+    });
+
+  // زر Restart في Win Screen
+  document.getElementById('restartButton')
+    .addEventListener('click', () => {
+      document.getElementById('winScreen').style.display = 'none';
+      restartGame();
     });
 }
 
+
 function startGame() {
     isGameStarted = true; // Mark the game as started
-    // backgroundMusic.play(); // Start background music
-    // Musik nur abspielen, wenn nicht gemutet
+    document.querySelector('.mobile-controls').classList.remove('hidden-controls');
     if (localStorage.getItem('musicMuted') !== 'true') {
         backgroundMusic.play();
     }
     world = new World(canvas, keyboard);
+    document.querySelector('.mobile-controls').classList.remove('hidden-controls');
     fullscreen.style.display = 'flex'; // Show the fullscreen button
-    console.log('Game started!');
 }
 
-// function restartGame() {
-//     window.location.reload(); // Reload the page to restart the game
-// }
-
-// ...existing code...
 
 function restartGame() {
-    // Stoppe alle Intervalle und Animationen der alten Welt (falls vorhanden)
+    // Stop all intervals and animations of the old world (if any)
+    document.querySelector('.mobile-controls').classList.add('hidden-controls');
     if (world) {
         if (typeof world.stopAllIntervals === 'function') world.stopAllIntervals();
-        // Falls du später noch cancelAnimationFrame nutzt, auch das hier stoppen!
+        // If you use cancelAnimationFrame later, stop that here as well!
         if (world.ctx) {
             world.ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
 
-        backgroundMusic.currentTime = 0;
-    // Musik nur abspielen, wenn nicht gemutet
+    backgroundMusic.currentTime = 0;
+    // Only play music if not muted.
     if (localStorage.getItem('musicMuted') !== 'true') {
         backgroundMusic.play();
     } else {
         backgroundMusic.pause();
     }
 
-    // Welt und Status zurücksetzen
+    // Reset world and status.
     world = new World(canvas, keyboard);
+    document.querySelector('.mobile-controls').classList.remove('hidden-controls');
 
-    // Statusleisten zurücksetzen
+    // Reset status bars.
     world.statusBarHealth.setPercentage(100);
     world.statusBarCoins.setCoinsPercentage(0);
     world.statusBarBottles.setBottlePercentage(0);
 
-    // // Musik neu starten, falls gewünscht
-    // backgroundMusic.currentTime = 0;
-    // backgroundMusic.play();
-
-    // Start- und Endbildschirme ausblenden
+    // Hide start and end screens.
     document.getElementById('gameOverScreen').style.display = 'none';
     document.getElementById('winScreen').style.display = 'none';
 
     isGameStarted = true;
 }
 
-// ...existing code...
-
 
 function winGame() {
-    // Stop background music
+    if (!world) return;
+    
+    // Mark win state
+    // world.gameWin = true;
+
+    // // Handle endgame cleanup and UI
+    // world.endgame();
+    world.endState('win');
+    
+
+    // Reset music
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
-
-    // Display the win screen
-    const winScreen = document.getElementById('winScreen');
-    winScreen.style.display = 'flex'; // Show the win screen
-
-    // Hide other UI elements
-    // document.getElementById('gameOverScreen').style.display = 'none';
-    // document.getElementById('fullScreen').style.display = 'none';
-
-    console.log('You won the game!');
 }
 
-// function muteBackgroundMusic() {
-//     let volumeControl = document.getElementById('volume');
-//     if (backgroundMusic.paused) {
-//         backgroundMusic.play(); // Play the music if it's paused
-//         volumeControl.src = './img/general_icons/volume_up_24dp.svg'; // Change button text to "Mute"
-//     } else {
-//         backgroundMusic.pause(); // Pause the music if it's playing
-//         volumeControl.src = './img/general_icons/no_sound_24dp.svg'; // Change button text to "Unmute"
-//     }
-// }
-
-// function muteBackgroundMusic() {
-//     let volumeControl = document.getElementById('volume').querySelector('img');
-//     if (backgroundMusic.paused) {
-//         // backgroundMusic.play(); // Play the music if it's paused
-//         if (isGameStarted) {
-//             backgroundMusic.play(); // Play the music only if the game has started
-//         }
-//         volumeControl.src = 'img/general_icons/volume_up_24dp.svg'; // Change icon to "volume up"
-//     } else {
-//         backgroundMusic.pause(); // Pause the music if it's playing
-//         volumeControl.src = 'img/general_icons/no_sound_24dp.svg'; // Change icon to "no sound"
-//         localStorage.setItem('musicMuted', 'true'); // <-- speichern
-//     }
-// }
 
 function muteBackgroundMusic() {
     let volumeControl = document.getElementById('volume').querySelector('img');
-    if (backgroundMusic.paused) {
+
+    if (backgroundMusic.muted) {
+        // Unmute
+        backgroundMusic.muted = false;
+
         if (isGameStarted) {
             backgroundMusic.play();
         }
+
+        if (world && world.character) {
+            allSounds.forEach(sound => sound.muted = false);
+        }
+
         volumeControl.src = 'img/general_icons/volume_up_24dp.svg';
         localStorage.setItem('musicMuted', 'false');
     } else {
+        // Mute
+        backgroundMusic.muted = true;
         backgroundMusic.pause();
+
+        if (world && world.character) {
+            allSounds.forEach(sound => sound.muted = true);
+        }
+
+        // Update the volume control icon
         volumeControl.src = 'img/general_icons/no_sound_24dp.svg';
         localStorage.setItem('musicMuted', 'true');
     }
@@ -172,73 +172,30 @@ function muteBackgroundMusic() {
 
 function aktiveFullscreen() {
     let fullscreen = document.getElementById('fullScreen').querySelector('img');
+
     if (!document.fullscreenElement) {
         canvas.requestFullscreen();
-        fullscreen.src = 'img/general_icons/fullscreen.svg'; // Ändert das Icon zurück zu "fullscreen"
-        // fullscreen.src = 'img/general_icons/fullscreen_exit_24dp.svg'; // Change icon to "exit fullscreen"
+        fullscreen.src = 'img/general_icons/fullscreen.svg'; // Change the icon back to "fullscreen".
     } else {
-        document.exitFullscreen(); // Beendet den Vollbildmodus
+        document.exitFullscreen(); // Exit fullscreen mode.
         fullscreen.src = 'img/general_icons/fullscreen_exit_24dp.svg'; // Change icon to "exit fullscreen"
-        // fullscreen.src = 'img/general_icons/fullscreen.svg'; // Ändert das Icon zurück zu "fullscreen"
     }
 }
 
 
-window.addEventListener("keydown", (event) => {
-    console.log(event.keyCode);
-
-    if (event.keyCode == 39) {
-        keyboard.RIGHT = true;
-    }
-
-    if (event.keyCode == 37) {
-        keyboard.LEFT = true;
-    }
-
-    if (event.keyCode == 38) {
-        keyboard.UP = true;
-    }
-
-    if (event.keyCode == 40) {
-        keyboard.DOWN = true;
-    }
-
-    if (event.keyCode == 32) {
-        keyboard.SPACE = true;
-    }
-
-    if (event.keyCode == 68) {
-        keyboard.D = true;
-    }
-    // console.log(event);
-
-});
+/**
+ * Directions overlay hiddden by clicking the button.
+ */
+function hideDirections() {
+    const directionsOverlay = document.getElementById('directionsOverlay');
+    directionsOverlay.style.display = 'none'; // Hide the overlay
+}
 
 
-window.addEventListener("keyup", (event) => {
-    if (event.keyCode == 39) {
-        keyboard.RIGHT = false;
-    }
-
-    if (event.keyCode == 37) {
-        keyboard.LEFT = false;
-    }
-
-    if (event.keyCode == 38) {
-        keyboard.UP = false;
-    }
-
-    if (event.keyCode == 40) {
-        keyboard.DOWN = false;
-    }
-
-    if (event.keyCode == 32) {
-        keyboard.SPACE = false;
-    }
-
-    if (event.keyCode == 68) {
-        keyboard.D = false;
-    }
-    // console.log(event);
-
-});
+/**
+ * Directions overlay shown by clicking the button
+ */
+function showDirections() {
+    const directionsOverlay = document.getElementById('directionsOverlay');
+    directionsOverlay.style.display = 'flex'; // Show the overlay
+}

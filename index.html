@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>El Pollo Loco</title>
     <link rel="icon" type="image/x-icon" href="/img/favicon/fav-icon_salsa_bottle.png">
     <link rel="stylesheet" href="style.css">
@@ -34,48 +34,76 @@
 </head>
 
 <body onload="init()">
+    <section>
 
-    <h1>El Pollo Loco</h1>
+        <h1>El Pollo Loco</h1>
 
-    <div id="game-container">
-        <canvas id="canvas" width="720" height="480"></canvas>
-        <div id="start-screen">
-            <button id="startButton">Start Game</button>
+        <div id="game-container">
+            <canvas id="canvas" width="720" height="480"></canvas>
+            <div id="start-screen">
+                <button id="startButton">Start Game</button>
+                <img class="game-info" onclick="showDirections()" src="./img/info.png" alt="">
+            </div>
+            <!-- The rotate message appears in portrait mode on mobile/tablet -->
+            <div id="rotate-message">
+                <span>Please rotate your device to landscape mode to play the game.</span>
+            </div>
+
+            <div id="gameOverScreen" style="display: none;">
+                <!-- <h1>Game Over</h1> -->
+                <a class="home-btn" href="index.html">Back To Home</a>
+                <button id="newGameButton" class="btn">New Game</button>
+            </div>
+            <!-- filepath: x:\Project\12\EL-POLLO-LOCO\index.html -->
+            <div id="winScreen" style="display: none;">
+                <a class="home-btn" href="index.html">Back To Home</a>
+                <button id="restartButton" class="btn">Restart</button>
+            </div>
+
+            <div class="icons">
+                <div class="full-screen" id="fullScreen">
+                    <img src="./img/general_icons/fullscreen.svg" alt="">
+                </div>
+                <div id="volume" class="volume">
+                    <img src="./img/general_icons/volume_up_24dp.svg" alt="">
+                </div>
+            </div>
+
+            <!-- mobile-controls -->
+            <div class="mobile-controls hidden-controls">
+                <div class="move-buttns">
+                    <img id="leftBtnMobile" src="./img/mobile_controls_icons/left-arrow.png" alt="">
+                    <img id="rightBtnMobile" src="./img/mobile_controls_icons/right-arrow.png" alt="">
+                </div>
+
+                <div class="action-buttns">
+                    <img id="jumpBtnMobile" src="./img/mobile_controls_icons/jumping.png" alt="">
+                    <img id="throwBtnMobile" src="./img/mobile_controls_icons/throwing.png" alt="">
+                </div>
+            </div>
         </div>
 
-        <div class="icons">
-            <div class="full-screen" id="fullScreen">
-                <img src="./img/general_icons/fullscreen.svg" alt="">
-            </div>
-            <div id="volume" class="volume">
-                <img src="./img/general_icons/volume_up_24dp.svg" alt="">
+
+        <div id="directionsOverlay">
+            <div class="directions">
+                <h3>How to Play</h3>
+                <ul>
+                    <li><strong>Move Left & Right:</strong> Left & Right Arrow Key</li>
+                    <li><strong>Jump:</strong>Spacebar</li>
+                    <li><strong>Throw Bottle:</strong> D Key (if you have bottles)</li>
+                    <li><strong>Collect Coins & Bottles:</strong> Walk over them</li>
+                    <li><strong>Defeat Enemies:</strong> Jump on them or throw bottles</li>
+                    <li><strong>Goal:</strong> Defeat the Endboss to win!</li>
+                </ul>
+                <p><em>Tip: Avoid enemy attacks and save bottles to defeat the Endboss!</em></p>
+                <button id="directionsOk" onclick="hideDirections()">OK</button>
             </div>
         </div>
-    </div>
-    <div id="gameOverScreen" style="display: none;">
-        <!-- <h1>Game Over</h1> -->
-        <button id="restartButton" class="restartButton">New Game</button>
-    </div>
-    <!-- filepath: x:\Project\12\EL-POLLO-LOCO\index.html -->
-    <div id="winScreen" style="display: none;">
-        <button id="restartButton" class="restartButton">Restart</button>
-    </div>
 
-<div class="directions">
-    <h3>How to Play</h3>
-    <ul>
-        <li><strong>Move Left & Right:</strong> Left & Right Arrow Key</li>
-        <!-- <li><strong>Move Right:</strong> Right Arrow Key</li> -->
-        <li><strong>Jump:</strong>Spacebar</li>
-        <li><strong>Throw Bottle:</strong> D Key (if you have bottles)</li>
-        <li><strong>Collect Coins & Bottles:</strong> Walk over them</li>
-        <li><strong>Defeat Enemies:</strong> Jump on them or throw bottles</li>
-        <li><strong>Goal:</strong> Defeat the Endboss to win!</li>
-    </ul>
-    <p><em>Tip: Avoid enemy attacks and save bottles to defeat the Endboss!</em></p>
-</div>
-
-
+        <div class="legal-notice">
+            <a href="legal-notice.html">Legal Notice</a>
+        </div>
+    </section>
 </body>
 
 </html>

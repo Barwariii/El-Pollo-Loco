@@ -1,39 +1,32 @@
 body {
+  margin: 0;
+  padding: 0;
+}
+
+section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background-image: url("img/5_background/layers/air.png"); */
   background-image: url("img/BG_2.png");
-  /* background-size: 120vw 100vh; */
-  /* background-size: cover; */
-  /* background-repeat: no-repeat; */
-  background-color: rgb(
-    58,
-    57,
-    55
-  ); /*temporary background-color for comfortable coding */
+  background-size: cover;
+  background-color: rgb(58, 57, 55);
+  height: 100vh;
+  width: 100vw;
+  background-repeat: no-repeat;
 }
-
-/* .volume img {
-  position: absolute;
-  right: 30px;
-  top: 20px;
-  fill: black;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-} */
 
 #game-container {
   position: relative;
-  display: flex;
+  display: block;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 canvas {
-  width: 720px;
-  height: 480px;
   background-color: black;
-  /* border: 2px inset rgb(27, 27, 27); */
+  display: block;
+  /* width: 100%; */
+  /* height: 100%; */
 }
 
 #start-screen {
@@ -52,13 +45,27 @@ canvas {
   z-index: 10;
 }
 
+.game-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.game-info:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s ease-in-out;
+}
+
 #startButton {
   position: absolute;
   top: 10%;
   padding: 10px 20px;
   font-size: 20px;
   cursor: pointer;
-  border: inset #f1f1f1  4px;
+  border: inset #f1f1f1 4px;
   border-radius: 24px;
   background: linear-gradient(176deg, #ffda07, #ff5300c7);
 }
@@ -68,7 +75,6 @@ canvas {
   color: white;
   /* transition: all 0.3s ease-in-out; */
 }
-
 
 /* Icons div - Fullscreen and Volume Style Section */
 .icons .full-screen {
@@ -85,7 +91,6 @@ canvas {
   width: 40px;
   height: 40px;
 }
-
 
 /* Volume Control Style Section */
 .icons .volume img {
@@ -104,12 +109,15 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  /* background-color: rgba(0, 0, 0, 0.8); */
+  background-image: url(img/9_intro_outro_screens/game_over/oh\ no\ you\ lost!.png);
+  background-position: center;
+  background-size: 90% 70%;
   display: flex;
-  flex-direction: column;
+  background-repeat: no-repeat;
   align-items: center;
   justify-content: center;
   color: white;
+  gap: 16px;
   z-index: 10;
 }
 
@@ -119,41 +127,78 @@ canvas {
   left: 0;
   width: 100%;
   height: 100%;
-  /* background-color: rgba(0, 0, 0, 0.8); */
+  background-image: url(img/9_intro_outro_screens/win/win_2.png);
+  background-position: center;
+  background-size: 90% 70%;
+  background-repeat: no-repeat;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
+  gap: 16px;
   z-index: 10;
 }
 
-#restartButton {
+#restartButton,
+#newGameButton,
+.home-btn {
+  position: relative;
+  top: 25%;
+  margin-top: 8px;
   padding: 10px 20px;
   font-size: 20px;
   cursor: pointer;
   border: inset #c57425 4px;
   border-radius: 8px;
   background: linear-gradient(176deg, #ffda07, #ff5300c7);
+  color: #000000;
 }
 
-#restartButton:hover {
+#restartButton:hover,
+#newGameButton:hover,
+.home-btn:hover {
   background: linear-gradient(176deg, #ff5300c7, #ffda07);
   color: white;
 }
 
-
 /* how to play styling */
+#directionsOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(34, 34, 34, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+#directionsOk {
+  margin-top: 15px;
+  padding: 16px 58px;
+  font-size: 1em;
+  border: inset #f1f1f1 3px;
+  border-radius: 12px;
+  background: linear-gradient(176deg, #ffda07, #ff5300c7);
+  cursor: pointer;
+}
+#directionsOk:hover {
+  background: linear-gradient(176deg, #ff5300c7, #ffda07);
+  color: white;
+}
 
 .directions {
-  max-width: 400px;
-  margin: 30px auto 0 auto;
+  max-width: 500px;
+  width: 500px;
+  margin: 20px auto 0 auto;
   padding: 10px 30px;
   background: rgba(34, 34, 34, 0.85);
   border-radius: 18px;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.3);
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
   color: #ffe7b2;
-  /* font-size: 1.1em; */
+  text-align: center;
   border: 2px solid #ffda07;
 }
 
@@ -174,7 +219,186 @@ canvas {
   line-height: 1.5;
 }
 
+li::marker {
+  color: red;
+}
+
 .directions em {
   color: #ff5300;
   font-style: italic;
+}
+
+.mobile-controls,
+#rotate-message {
+  display: none;
+}
+
+.mobile-controls.hidden-controls {
+  display: none !important;
+  pointer-events: none;
+}
+
+/* Legal Notice Section */
+.legal-notice {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(34, 34, 34, 0.85);
+  padding: 10px 30px;
+  border-radius: 18px;
+}
+
+a {
+  color: #ffda07;
+  text-decoration: none;
+}
+
+a:hover {
+  color: aliceblue;
+}
+
+:fullscreen canvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Smartphones version */
+@media (pointer: coarse) and (orientation: landscape) {
+  html {
+    overflow: hidden;
+    scroll-behavior: none;
+    /* position: relative; */
+  }
+
+  section {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  #game-container {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  #startButton,
+  #restartButton {
+    font-size: 16px;
+    height: unset;
+    width: unset;
+  }
+
+  /* how to play styling */
+  h1,
+  #directionsOverlay,
+  .directions,
+  .legal-notice,
+  .full-screen img,
+  #rotate-message {
+    display: none;
+  }
+
+  .mobile-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 32px;
+    /* position: absolute;
+    bottom: 10px; */
+  }
+
+  .move-buttns {
+    position: absolute;
+    bottom: 10px;
+    left: 16px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .action-buttns {
+    position: absolute;
+    bottom: 10px;
+    right: 16px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .move-buttns img,
+  .action-buttns img {
+    height: 60px;
+    width: 60px;
+    background: #bb5b5ba8;
+    border-radius: 50%;
+  }
+
+  button,
+  .mobile-controls {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (pointer: coarse) and (orientation: portrait) {
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+  #rotate-message {
+    display: flex;
+  }
+
+  #directionsOverlay,
+  .directions {
+    display: none;
+  }
+
+  #game-container,
+  canvas {
+    /* position: absolute; */
+    box-sizing: border-box;
+    width: 100vw;
+    max-width: 100%;
+    margin: 32px auto 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 2px 24px 0 rgba(0, 0, 0, 0.3);
+    display: block;
+  }
+
+  body {
+    align-items: flex-start;
+  }
+
+  .legal-notice {
+    display: block;
+  }
+
+  #rotate-message {
+    position: absolute;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    width: 100vw;
+    height: 100%;
+    background: rgba(34, 34, 34, 0.95);
+    color: #ffda07;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    text-align: center;
+    pointer-events: none;
+    display: flex;
+  }
 }

@@ -8,6 +8,12 @@ class ThrowableObject extends MovableObject {
         this.y = y;
         this.height = 100;
         this.width = 80;
+
+        this.bottle_sound = new Audio('audio/bottle-sound.mp3');
+        this.bottle_sound.volume = 0.05;
+        this.bottle_sound.muted = localStorage.getItem('musicMuted') === 'true';
+        allSounds.push(this.bottle_sound);
+
         this.throw();
     }
 
@@ -22,17 +28,17 @@ class ThrowableObject extends MovableObject {
 
     checkCollisionWithEnemies() {
         this.world.level.enemies.forEach((enemy, index) => {
-            if (this.isColliding(enemy)) {
+            if (enemy instanceof Endboss ? this.isCollidingRedFrame(enemy) : this.isColliding(enemy)) {
+                this.hasCollided = true;
+                this.bottle_sound.currentTime = 0; // Reset, falls schon gespielt wird
+                this.bottle_sound.play(); // <-- Sound NUR hier beim Treffer!
                 enemy.energy -= 10; // Reduce the enemy's energy by 10
-                console.log(`Enemy hit! Remaining energy: ${enemy.energy}`);
                 if (enemy instanceof Endboss && !enemy.isDead) {
                     enemy.state = 'hurt'; // <-- Hurt-Animation 
                 }
                 if (enemy.energy <= 0) {
-                    console.log('Enemy defeated!');
-                    // this.world.level.enemies.splice(index, 1); // Remove the defeated enemy
                     if (!(enemy instanceof Endboss)) {
-                        this.world.level.enemies.splice(index, 1); // Nur normale Gegner sofort entfernen
+                        this.world.level.enemies.splice(index, 1); // Only remove regular enemies immediately.
                     }
                 }
                 this.destroy(); // Remove the bottle after the first collision

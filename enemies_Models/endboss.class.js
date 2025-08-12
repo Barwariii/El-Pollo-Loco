@@ -5,12 +5,25 @@ class Endboss extends MovableObject {
     width = 250;
     y = 10;
     energy = 50;
+    speed = 15;
     isDead = false;
+    offset = {
+        top: 80,
+        bottom: 80,
+        left: 30,
+        right: 60
+    };
 
-    state = 'walking'; // Possible states: 'walking', 'chasing', 'attacking', 'hurt', 'dead'
+
+    /**
+     * Possible states: 'walking', 'chasing', 'attacking', 'hurt', 'dead'
+     * 2 seconds cooldown between attacks
+     * Store the world object
+     */
+    state = 'walking';
     lastAttackTime = 0;
-    attackCooldown = 2000; // 2 seconds cooldown between attacks
-    world; // Add a property to store the world object
+    attackCooldown = 2000; // 
+    world;
 
 
     IMAGES_WALKING = [
@@ -61,53 +74,74 @@ class Endboss extends MovableObject {
         this.loadImages(this.IMAGES_HURT)
         this.loadImages(this.IMAGES_DEAD);
         this.x = 2550;
-        this.world = world; // Store the world object
-        this.state = 'alert'; // Start in alert state
-        console.log('World assigned to Endboss:', this.world); // Debug log
-        // this.animate();
+        this.world = world;
+        this.state = 'alert';
+        this.maxEnergy = this.energy;
     }
 
-    // Override the onAddedToWorld method
+    draw(ctx) {
+        super.draw(ctx);
+        if (!this.isDead && this.energy > 0) {
+            this.drawHealthBar(ctx);
+        }
+    }
+
+    drawHealthBar(ctx) {
+        const w = 180, h = 14;
+        const x = this.x + this.width / 2 - w / 2;
+        const y = this.y + (this.height * 0.1);
+
+        const pct = Math.max(0, Math.min(1, this.energy / this.maxEnergy));
+
+        /** Frame + background */
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#222';
+        ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = '#555';
+        ctx.fillRect(x, y, w, h);
+
+        /** Color based on remaining HP and Filling */
+        const p = pct * 100;
+        const fill = p > 60 ? '#2ecc71' : p > 30 ? '#f1c40f' : '#e74c3c';
+
+        ctx.fillStyle = fill;
+        ctx.fillRect(x, y, w * pct, h);
+    }
+
+    /**
+     * Override the onAddedToWorld method
+     * @param {*} world 
+     * Call the parent class method from MovableObject
+     * Start the animation of the Endboss when added to the world
+     */
     onAddedToWorld(world) {
-        super.onAddedToWorld(world);  // Call the parent class method from MovableObject
-        this.animate();  // Start the animation of the Endboss when added to the world
+        super.onAddedToWorld(world);
+        this.animate();
     }
 
 
     animate() {
         setInterval(() => {
-            if (this.isDead) return; // Wenn tot, keine weitere Animation
-
+            if (this.isDead) return;
             switch (this.state) {
                 case 'walking':
-                    this.playAnimation(this.IMAGES_WALKING);
-                    this.chaseCharacter(); // method for the walking state
+                    this.handleWalkingState();
                     break;
-
                 case 'alert':
-                    this.alertState(); // method for the alert state
+                    this.handleAlertState();
                     break;
-
-
                 case 'chasing':
-                    this.chaseCharacter(); // method for the chasing state
-                    this.checkAttackOpportunity(); // Check if the Endboss can attack
+                    this.handleChasingState();
                     break;
-
                 case 'attacking':
-                    this.playAnimation(this.IMAGES_ATTACK); // Play attack animation
+                    this.handleAttackingState();
                     break;
-
                 case 'hurt':
-                    this.playAnimation(this.IMAGES_HURT);
-                    setTimeout(() => {
-                        this.state = 'chasing';
-                    }, 500);
+                    this.handleHurtState();
                     break;
-
-                // case 'dead':
-                //     this.playAnimation(this.IMAGES_DEAD);
-                //     break;
+                case 'dead':
+                    this.handleDeadState();
+                    break;
             }
         }, 100);
 
@@ -119,117 +153,125 @@ class Endboss extends MovableObject {
     }
 
 
-    // Method to handle the alert state of the Endboss
+    /** Sub-functions for the states. */
+    handleWalkingState() {
+        this.playAnimation(this.IMAGES_WALKING);
+        this.chaseCharacter();
+    }
+
+    handleAlertState() {
+        this.alertState();
+    }
+
+    handleChasingState() {
+        this.chaseCharacter();
+        this.checkAttackOpportunity();
+    }
+
+    handleAttackingState() {
+        this.playAnimation(this.IMAGES_ATTACK);
+    }
+
+    handleHurtState() {
+        this.playAnimation(this.IMAGES_HURT);
+        setTimeout(() => {
+            this.state = 'chasing';
+        }, 500);
+    }
+
+    handleDeadState() {
+        this.playAnimation(this.IMAGES_DEAD);
+    }
+
+
+
+    /** Method to handle the alert state of the Endboss */
     alertState() {
-        const distanceToCharacter = Math.abs(this.x - this.world.character.x); // Calculate the distance to the player
-        const activationDistance = 500; // Distance at which the Endboss becomes active
+        const distanceToCharacter = Math.abs(this.x - this.world.character.x); /** Calculate the distance to the player */
+        const activationDistance = 500; /** Distance at which the Endboss becomes active */
 
         if (distanceToCharacter <= activationDistance) {
-            console.log('Character is close. Endboss is now chasing.');
-            this.state = 'chasing'; // Switch to the "chasing" state
+            this.state = 'chasing'; /** Switch to the "chasing" state */
         } else {
-            console.log('Endboss is in alert state.');
-            this.playAnimation(this.IMAGES_ALERT); // Play the alert animation
+            this.playAnimation(this.IMAGES_ALERT);
         }
     }
 
 
-    // Method to handle the chasing behavior of the Endboss
+    /** Method to handle the chasing behavior of the Endboss */
     chaseCharacter() {
-        const distanceToCharacter = Math.abs(this.x - this.world.character.x); // Calculate the distance to the player
-        const activationDistance = 500; // Distance at which the Endboss becomes active
+        const distanceToCharacter = Math.abs(this.x - this.world.character.x);
+        const activationDistance = 500;
 
         if (distanceToCharacter <= activationDistance) {
             if (this.x > this.world.character.x) {
-                this.x -= 10; // Move left
+                this.x -= this.speed; /** Move left */
                 this.otherDirection = false;
             } else {
-                this.x += 10; // Move right
+                this.x += this.speed; /** Move right */
                 this.otherDirection = true;
             }
-            console.log('Character position:', this.world.character.x);
             this.state = 'chasing';
             this.playAnimation(this.IMAGES_WALKING);
         } else {
-            // console.log('Character is too far. Endboss is idle.');
-            console.log('Endboss is chasing the character.');
-            this.state = 'walking'; // Endboss remains in the "walking" state
+            this.state = 'walking'; /** Endboss remains in the "walking" state */
         }
     }
 
 
-    // Method to check if the Endboss can attack the character
+    /** Method to check if the Endboss can attack the character */
     checkAttackOpportunity() {
         let currentTime = new Date().getTime();
         if (currentTime - this.lastAttackTime > this.attackCooldown && this.isColliding(this.world.character)) {
             this.state = 'attacking';
             this.lastAttackTime = currentTime;
+
+            if (!this.world.character.isDead()) {
+                this.world.character.energy -= 40;
+                this.world.character.lastHit = currentTime;
+                this.world.statusBarHealth.setPercentage(this.world.character.energy);
+
+                if (this.world.character.isDead()) {
+                    this.endState('lose');
+                    // this.world.gameOver = true;
+                    // this.world.endgame();
+                }
+            }
             setTimeout(() => {
                 this.state = 'chasing';
-            }, 1000); // Attack duration
+            }, 1000);
         }
     }
 
-    // // Method to play the dead animation and trigger game win logic
-    // playDeadAnimation() {
-    //     this.isDead = true; // Set the isDead property to true
-    //     this.state = 'dead'; // <- Das ist entscheidend!
-    //     this.playDeadOnce(); // Nur einmal Animation abspielen
-
-    //     // Trigger win logic after the death animation
-    // setTimeout(() => {
-    //     winGame(); // Call the winGame function
-    // }, this.IMAGES_DEAD.length * 200); // Wait for the death animation to finish
-    // }
-
-    // // Method to check if the Endboss is dead
-    // hit() {
-    //     if (this.state !== 'dead') {
-    //         this.energy -= 10;
-    //         this.state = 'hurt';
-    //         if (this.energy <= 0) {
-    //             this.playDeadAnimation();
-    //         }
-    //     }
-    // }
 
     playDeadAnimation() {
-        this.isDead = true; // Markiere den Endboss als tot
-        this.state = 'dead'; // Setze den Zustand auf "dead"
-    
-        let i = 0; // Startindex für die Animation
+        this.isDead = true;
+        this.state = 'dead';
+
+        /** Start index for the animation. */
+        let i = 0;
         const interval = setInterval(() => {
             if (i < this.IMAGES_DEAD.length) {
-                this.img = this.imageCache[this.IMAGES_DEAD[i]]; // Lade das nächste Bild der Animation
+                this.img = this.imageCache[this.IMAGES_DEAD[i]]; /** Load the next frame of the animation. */
                 i++;
             } else {
-                clearInterval(interval); // Stoppe die Animation, wenn alle Bilder abgespielt wurden
-                this.removeEndboss(); // Entferne den Endboss aus dem Spiel
+                clearInterval(interval); /** Stop the animation when all frames have been played. */
+                this.removeEndboss();
             }
-        }, 200); // Zeitintervall zwischen den Bildern (200ms)
-    }
-    
-    // Methode, um den Endboss aus dem Spiel zu entfernen
-    removeEndboss() {
-        const index = this.world.level.enemies.indexOf(this); // Finde den Index des Endbosses in der Gegnerliste
-        if (index > -1) {
-            this.world.level.enemies.splice(index, 1); // Entferne den Endboss aus der Liste
-        }
-        this.world.gameWin = true; // Setze das Spiel als gewonnen
-        this.world.endgame(); // Rufe die Endgame-Funktion auf, um das Spiel zu beenden
-        // winGame(); // Rufe die winGame()-Funktion auf, um den Sieg zu registrieren
+        }, 200);
     }
 
-    // playDeadOnce() {
-    //     let i = 0;
-    //     let interval = setInterval(() => {
-    //         this.img = this.imageCache[this.IMAGES_DEAD[i]];
-    //         i++;
-    //         if (i >= this.IMAGES_DEAD.length) {
-    //             clearInterval(interval);
-    //         }
-    //     }, 200);
-    // }
+
+    /** Method to remove the end boss from the game. */
+    removeEndboss() {
+        const index = this.world.level.enemies.indexOf(this); /** Find the index of the end boss in the enemies list. */
+        if (index > -1) {
+            this.world.level.enemies.splice(index, 1); /** Remove the end boss from the list. */
+        }
+        this.world.gameWin = true;
+        this.world.endgame();
+    }
+
 
     playDeadOnce() {
         let i = 0;
@@ -242,5 +284,4 @@ class Endboss extends MovableObject {
             }
         }, 200);
     }
-    
 }
