@@ -262,7 +262,7 @@ class Endboss extends MovableObject {
                 this.world.statusBarHealth.setPercentage(this.world.character.energy);
 
                 if (this.world.character.isDead()) {
-                    this.endState('lose');
+                    this.world.endState('lose');
                 }
             }
             setTimeout(() => {
