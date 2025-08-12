@@ -1,6 +1,24 @@
+/**
+ * Represents the main game world where all entities, objects, and logic interact.
+ * Handles rendering, updates, collisions, collectible management, and game state.
+ * @class World
+ * @property {Array<number>} intervals - Stores IDs of all intervals for easy clearing.
+ * @property {HTMLCanvasElement} canvas - The canvas element used for rendering.
+ * @property {CanvasRenderingContext2D} ctx - The rendering context for the canvas.
+ * @property {Keyboard} keyboard - Keyboard input handler.
+ * @property {number} camera_x - Horizontal camera offset for scrolling.
+ * @property {statusBar} statusBar - General status bar instance.
+ * @property {statusBarHealth} statusBarHealth - Health bar instance.
+ * @property {statusBarCoins} statusBarCoins - Coins status bar instance.
+ * @property {statusBarBottles} statusBarBottles - Bottles status bar instance.
+ * @property {Array<ThrowableObject>} throwableobjects - List of throwable objects currently active.
+ * @property {boolean} gameOver - Whether the game is over.
+ * @property {boolean} gameWin - Whether the player has won.
+ * @property {boolean} ended - Whether the game has ended (either win or lose).
+ */
 class World {
 
-    intervals = []; // <-- Array to store intervals
+    intervals = [];
 
     canvas;
     ctx;
@@ -11,29 +29,30 @@ class World {
     statusBarCoins = new statusBarCoins();
     statusBarBottles = new statusBarBottles();
     throwableobjects = [];
-    gameOverScreen = new Image(); // Add game over screen image
-    gameOver = false; // Flag to check if game is over
-    gamewinerScreen = new Image(); // Add game win screen image
-    gameWin = false; // Flag to check if game is won
+    gameOverScreen = new Image();
+    gameOver = false;
+    gamewinerScreen = new Image();
+    gameWin = false;
     ended = false;
 
+    /**
+     * Creates the game world with the given canvas and keyboard handler.
+     * Initializes level, character, and assigns world references.
+     * @param {HTMLCanvasElement} canvas - The game canvas.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
-        this.canvas = canvas; // Store the canvas element
+        this.canvas = canvas;
         this.keyboard = keyboard;
 
-        this.level = createLevel1(); // <-- Create new level!
+        this.level = createLevel1();
 
-
-        // Only create character now and set the reference!
         this.character = new Character();
         this.character.world = this;
 
-        // Assign the world object to all enemies
         this.level.enemies.forEach(enemy => {
-            enemy.world = this; // Assign the world object to each enemy
-
-            // Call animate() only after assigning the world object
+            enemy.world = this;
             if (enemy instanceof Endboss) {
                 enemy.animate();
             }
@@ -44,10 +63,16 @@ class World {
         this.run();
     }
 
+    /**
+     * Assigns the world reference to the character.
+     */
     setWorld() {
-        this.character.world = this; // Assign the world object to the character
+        this.character.world = this;
     }
 
+    /**
+     * Starts the game update loop for collision checks and object updates.
+     */
     run() {
         const intervalId = setInterval(() => {
             if (this.ended) return;
@@ -59,26 +84,36 @@ class World {
                 this.checkThrowableObject();
             }
         }, 200);
-        this.intervals.push(intervalId); // <-- store the interval ID
+        this.intervals.push(intervalId);
     }
 
+    /**
+     * Sets the end state of the game and calls endgame().
+     * @param {'win'|'lose'} state - The final state of the game.
+     */
     endState(state) {
         if (this.ended) return;
-        this.ended =true;
+        this.ended = true;
         this.gameWin = state === 'win';
-        this.gameOver = state === 'lose'
+        this.gameOver = state === 'lose';
         this.endgame();
     }
 
+    /**
+     * Stops all intervals currently running in the world.
+     */
     stopAllIntervals() {
         this.intervals.forEach(id => clearInterval(id));
         this.intervals = [];
     }
 
+    /**
+     * Checks if the player throws a bottle and updates the game state accordingly.
+     */
     checkThrowableObject() {
         if (this.keyboard.wasDPressOnce() && this.character.bottles > 0) {
             let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 140);
-            bottle.world = this; // Assign the world object to the throwable bottle
+            bottle.world = this;
             this.throwableobjects.push(bottle);
             this.character.bottles--;
 
@@ -90,44 +125,44 @@ class World {
     }
 
     /**
-     * Check if the character is colliding with the coin and remove it from the level
+     * Checks and collects coins when the character collides with them.
      */
     checkCollectables() {
         this.level.coins.forEach((coin, index) => {
             if (this.character.isCollidingRedFrame(coin)) {
-                this.level.coins.splice(index, 1); // Remove the coin from the level
-                this.character.collectCoin(); // Update the coin count and status bar
+                this.level.coins.splice(index, 1);
+                this.character.collectCoin();
             }
         });
     }
 
     /**
-     * Check if the character is colliding with the Bottles and remove it from the level
+     * Checks and collects bottles when the character collides with them.
      */
     checkCollectableBottles() {
         this.level.bottles.forEach((bottle, index) => {
             if (this.character.isColliding(bottle)) {
-                this.level.bottles.splice(index, 1); // Remove the bottle from the level
-                this.character.collectBottle(); // Update the bottle count and status bar
+                this.level.bottles.splice(index, 1);
+                this.character.collectBottle();
             }
         });
     }
 
+    /**
+     * Checks collisions between the character and enemies, applying damage if necessary.
+     */
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (this.gameWin || this.gameOver) return;
             if (this.character.isColliding(enemy) && enemy.energy > 0) {
-                // Check if the collision is not from above
                 if (this.character.speedY >= 0) {
                     let currentTime = Date.now();
-                    if (currentTime - this.character.lastHit > 1000) { // Ensure 1-second cooldown between hits
-                        this.character.hit(); // Reduce character's energy
-                        this.statusBarHealth.setPercentage(this.character.energy); // Update health status bar
+                    if (currentTime - this.character.lastHit > 1000) {
+                        this.character.hit();
+                        this.statusBarHealth.setPercentage(this.character.energy);
 
                         if (this.character.isDead()) {
                             this.endState('lose');
-                            // this.gameOver = true; // Set game over flag to true
-                            // this.endgame(); // Trigger game over when character is dead
                         }
                     }
                 }
@@ -135,33 +170,28 @@ class World {
         });
     }
 
-
-        endgame() {
-        // 1. stop world loops
+    /**
+     * Ends the game by stopping all loops, clearing objects, and showing the correct end screen.
+     */
+    endgame() {
         this.stopAllIntervals();
-        
-        // 2. stop enemy animations and movements
+
         this.level.enemies.forEach(enemy => {
             if (enemy.animationInterval) clearInterval(enemy.animationInterval);
             if (enemy.movementInterval) clearInterval(enemy.movementInterval);
         });
-        // 3. clear enemy list
         this.level.enemies.length = 0;
 
-        // 4. stop throwable object loops and clear
         this.throwableobjects.forEach(obj => {
             if (obj.throwInterval) clearInterval(obj.throwInterval);
         });
         this.throwableobjects.length = 0;
 
-        // 5. stop character gravity
         if (this.character.gravityInterval) clearInterval(this.character.gravityInterval);
 
-        // 6. pause music and hide controls
         backgroundMusic.pause();
         document.querySelector('.mobile-controls').classList.add('hidden-controls');
 
-        // 7. show correct screen
         if (this.gameOver) {
             document.getElementById('gameOverScreen').style.display = 'flex';
         } else if (this.gameWin) {
@@ -169,8 +199,11 @@ class World {
         }
     }
 
+    /**
+     * Checks if the character kills an enemy by jumping on it.
+     */
     checkEnemiesCollisions() {
-        const margin = 15; // Small margin to check that the descent is really from above.
+        const margin = 15;
         this.level.enemies.some((enemy) => {
             const characterBottom = this.character.y + this.character.height;
             const enemyTop = enemy.y;
@@ -196,74 +229,77 @@ class World {
                 }
 
                 this.character.speedY = 0;
-                this.character.killEnemyOnJump = false; // Prevents killing another enemy until jumping again.
-                return true; // Stops at the first enemy that is killed.
+                this.character.killEnemyOnJump = false;
+                return true;
             }
             return false;
         });
     }
 
-
+    /**
+     * Main rendering loop for the game world.
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         if (this.gameOver) {
-            this.ctx.drawImage(this.gameOverScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game over screen
-            console.log("DRAW:", "gameWin", this.gameWin, "gameOver", this.gameOver);
-            return; // WICHTIG: Kein requestAnimationFrame mehr!
+            this.ctx.drawImage(this.gameOverScreen, 0, 0, this.canvas.width, this.canvas.height);
+            return;
         } else if (this.gameWin) {
-            this.ctx.drawImage(this.gamewinerScreen, 0, 0, this.canvas.width, this.canvas.height); // Draw game win screen
-            console.log("DRAW:", "gameWin", this.gameWin, "gameOver", this.gameOver);
-            return; // WICHTIG: Kein requestAnimationFrame mehr!
+            this.ctx.drawImage(this.gamewinerScreen, 0, 0, this.canvas.width, this.canvas.height);
+            return;
         } else {
+            this.ctx.translate(this.camera_x, 0);
 
-            this.ctx.translate(this.camera_x, 0); // Move camera to the left with the character
-
-            // Enemies for-loop
             this.addObjectsToMap(this.level.backgroundObjects);
-
-            //* --------- Space for fixed objects ---------
-            this.ctx.translate(-this.camera_x, 0); // Move back
-            this.addToMap(this.statusBarHealth);
-            this.addToMap(this.statusBarCoins);
-            this.addToMap(this.statusBarBottles);
-            this.ctx.translate(this.camera_x, 0); // Move forwards
-
             this.addObjectsToMap(this.level.clouds);
             this.addToMap(this.character);
             this.addObjectsToMap(this.level.enemies);
             this.addObjectsToMap(this.level.coins);
             this.addObjectsToMap(this.level.bottles);
-            this.addObjectsToMap(this.throwableobjects); // throwableobjects is a variable for thrown bottles  
+            this.addObjectsToMap(this.throwableobjects);
 
-            this.ctx.translate(-this.camera_x, 0); // Move camera to the right again with the character
+
+            this.ctx.translate(-this.camera_x, 0);
+            this.addToMap(this.statusBarHealth);
+            this.addToMap(this.statusBarCoins);
+            this.addToMap(this.statusBarBottles);
         }
 
-        let self = this; // Store 'this' in a variable because 'this' is not recognized in requestAnimationFrame
+        let self = this;
         requestAnimationFrame(function () {
             self.draw();
         });
     }
 
+    /**
+     * Adds multiple objects to the map.
+     * @param {Array} objects - List of objects to draw.
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });
     }
 
+    /**
+     * Draws a single object to the map.
+     * @param {MovableObject|DrawableObject} mo - The object to draw.
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
         }
         mo.draw(this.ctx);
-        // mo.drawFrame(this.ctx);
-        // mo.drawRedFrame(this.ctx);
-
         if (mo.otherDirection) {
             this.flipImageBack(mo);
         }
     }
 
+    /**
+     * Flips the given object horizontally before drawing.
+     * @param {MovableObject} mo - The object to flip.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -271,6 +307,10 @@ class World {
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Restores the object's original orientation after drawing.
+     * @param {MovableObject} mo - The object to flip back.
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();

@@ -1,4 +1,11 @@
-class statusBarCoins extends statusBar{
+/**
+ * Status bar for displaying the number of coins collected by the player.
+ * Extends the generic statusBar class to use coin-specific images.
+ * @class statusBarCoins
+ * @extends statusBar
+ * @property {number} coinsPercentage - Current fill percentage of the coin status bar.
+ */
+class statusBarCoins extends statusBar {
 
     IMAGES = [
         'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
@@ -9,8 +16,11 @@ class statusBarCoins extends statusBar{
         'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
     ];
 
-
     coinsPercentage = 0;
+
+    /**
+     * Creates a new coin status bar instance with default position, size, and images loaded.
+     */
     constructor() {
         super();
         this.loadImage('img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png');
@@ -21,24 +31,4 @@ class statusBarCoins extends statusBar{
         this.height = 50;
         this.setCoinsPercentage(0);
     }
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

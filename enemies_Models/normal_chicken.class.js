@@ -1,3 +1,10 @@
+/**
+ * Represents a normal chicken enemy that walks left and can die.
+ * @class normalChicken
+ * @extends MovableObject
+ * @property {number} y - Vertical position on the canvas.
+ * @property {{top:number,bottom:number,left:number,right:number}} offset - Collision offsets.
+ */
 class normalChicken extends MovableObject {
     height = 105;
     width = 105;
@@ -20,6 +27,10 @@ class normalChicken extends MovableObject {
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png',
     ];
 
+    /**
+     * Creates a normal chicken, preloads sprites, sets position/speed, and starts animations.
+     * @constructor
+     */
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -30,24 +41,29 @@ class normalChicken extends MovableObject {
         this.animate();
     }
 
+
+    /**
+     * Starts the animation and movement loops.
+     * - Animation loop: updates sprite frames every 100ms based on alive/dead state.
+     * - Movement loop: moves left at ~60 FPS while alive and game not ended.
+     * @returns {void}
+     */
     animate() {
-        // Animation: Chickens move and play animations
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD); // Play death animation
+                this.playAnimation(this.IMAGES_DEAD);
                 // console.log('Chicken is dead');
             } else {
-                this.playAnimation(this.IMAGES_WALKING); // Play walking animation
+                this.playAnimation(this.IMAGES_WALKING);
                 console.log('Chicken is walking');
             }
-        }, 100); // The animation changes every 200ms
+        }, 100);
 
-        // Movement: Chickens continuously move to the left as long as they are not dead
         this.movementInterval = setInterval(() => {
             if (this.world && (this.world.gameWin || this.world.gameOver)) return;
             if (!this.isDead()) {
                 this.moveLeft(); // Move only if the chicken is alive
             }
-        }, 1000 / 60); // Movement: 60 FPS
+        }, 1000 / 60);
     }
 }

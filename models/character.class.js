@@ -1,3 +1,13 @@
+/**
+ * Represents the main controllable character in the game.
+ * Handles movement, jumping, animations, sounds, and interactions with the game world.
+ * @class Character
+ * @extends MovableObject
+ * @property {number} y - The vertical starting position of the character.
+ * @property {{top:number,bottom:number,left:number,right:number}} offset - Collision detection offsets.
+ * @property {boolean} killEnemyOnJump - Whether the character can kill enemies by jumping on them.
+ * @property {World} world - Reference to the game world instance.
+ */
 class Character extends MovableObject {
 
     height = 350;
@@ -36,7 +46,7 @@ class Character extends MovableObject {
         'img/2_character_pepe/1_idle/long_idle/I-18.png',
         'img/2_character_pepe/1_idle/long_idle/I-19.png',
         'img/2_character_pepe/1_idle/long_idle/I-20.png',
-    ]
+    ];
 
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -76,8 +86,12 @@ class Character extends MovableObject {
     ];
 
     world;
-    walking_sound = new Audio('audio/running-on-sand-sound.FLAC')
-    jumping_sound = new Audio('audio/jump.MP3')
+    walking_sound = new Audio('audio/running-on-sand-sound.FLAC');
+    jumping_sound = new Audio('audio/jump.MP3');
+
+    /**
+     * Creates the character, loads all animations and sounds, and initializes movement/animation loops.
+     */
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.walking_sound.volume = 1;
@@ -100,6 +114,10 @@ class Character extends MovableObject {
 
     lastMoveTime = Date.now();
 
+
+    /**
+     * Starts movement and animation loops.
+     */
     animate() {
         this.startMovementLoop();
         this.startAnimationLoop();
@@ -107,13 +125,16 @@ class Character extends MovableObject {
 
 
     /**
-     * Character movement
+     * Starts the movement loop (30 FPS).
      */
     startMovementLoop() {
         this.movementInterval = setInterval(() => this.stepMovement(), 1000 / 30);
     }
 
 
+    /**
+     * Executes one movement step based on keyboard input.
+     */
     stepMovement() {
         let moved = false;
         if (this.handleRight()) moved = true;
@@ -127,13 +148,16 @@ class Character extends MovableObject {
 
 
     /**
-     * Character Frame animation
+     * Starts the animation loop (20 FPS).
      */
     startAnimationLoop() {
         this.animationInterval = setInterval(() => this.stepAnimation(), 50);
     }
 
 
+    /**
+     * Executes one animation step based on character state.
+     */
     stepAnimation() {
         const now = Date.now();
         const { idle, longIdle } = this.computeIdleFlags();
@@ -147,6 +171,10 @@ class Character extends MovableObject {
     }
 
 
+    /**
+     * Computes whether the character is idle or long idle.
+     * @returns {{idle: boolean, longIdle: boolean}}
+     */
     computeIdleFlags() {
         const idle = !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT;
         const longIdle = idle && !this.world.keyboard.SPACE;
@@ -154,6 +182,10 @@ class Character extends MovableObject {
     }
 
 
+    /**
+     * Handles right movement input.
+     * @returns {boolean} True if movement occurred.
+     */
     handleRight() {
         if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
             this.moveRight();
@@ -166,6 +198,11 @@ class Character extends MovableObject {
         return false;
     }
 
+
+    /**
+     * Handles left movement input.
+     * @returns {boolean} True if movement occurred.
+     */
     handleLeft() {
         if (this.world.keyboard.LEFT && this.x > 0) {
             this.moveLeft();
@@ -178,15 +215,22 @@ class Character extends MovableObject {
         return false;
     }
 
+
+    /**
+     * Handles stopping walking sound when no movement input or character is in air.
+     */
     handleNoMovement() {
-        // If no key is pressed (no movement)
         if ((!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) || this.isAboveGround()) {
-            /** Pauses the walking sound if no key is pressed or if character isAboveGround */
             this.walking_sound.pause();
-            this.walking_sound.currentTime = 0;  /** Resets the sound to the beginning */
+            this.walking_sound.currentTime = 0;
         }
     }
 
+
+    /**
+     * Handles jump input.
+     * @returns {boolean} True if jump occurred.
+     */
     handleJump() {
         if (this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
@@ -197,30 +241,33 @@ class Character extends MovableObject {
     }
 
 
-    /**
-     * Charachtur Animation
-     */
+    /** Plays dead animation. */
     playDeadAnimation() {
-        this.playAnimation(this.IMAGES_DEAD)
+        this.playAnimation(this.IMAGES_DEAD);
     }
 
+    /** Plays hurt animation. */
     playHurtAnimation() {
-        this.playAnimation(this.IMAGES_HURT)
+        this.playAnimation(this.IMAGES_HURT);
     }
 
+    /** Plays jumping animation. */
     playJumpingAnimation() {
-        this.playAnimation(this.IMAGES_JUMING)
+        this.playAnimation(this.IMAGES_JUMING);
     }
 
+    /** Plays walking animation. */
     playWalkingAnimation() {
-        this.playAnimation(this.IMAGES_WALKING)
+        this.playAnimation(this.IMAGES_WALKING);
     }
 
+    /** Plays idle animation. */
     playIdleAnimation() {
-        this.playAnimation(this.IMAGES_IDLE)
+        this.playAnimation(this.IMAGES_IDLE);
     }
 
+    /** Plays long idle animation. */
     playLongIdleAnimation() {
-        this.playAnimation(this.IMAGES_LONG_IDLE)
+        this.playAnimation(this.IMAGES_LONG_IDLE);
     }
 }
