@@ -1,108 +1,52 @@
-/**
- * Base class for status bars such as health, coins, and bottles.
- * Extends DrawableObject to display a visual representation of percentage-based values.
- * @class statusBar
- * @extends DrawableObject
- * @property {string[]} IMAGES - Array of image paths representing different fill levels.
- * @property {number} percentage - Current percentage for health or general use.
- * @property {number} coinsPercentage - Current coin collection percentage.
- * @property {number} bottlePercentage - Current bottle collection percentage.
- */
 class statusBar extends DrawableObject {
-
-    /**
-     * Array of status bar images, to be defined in subclasses.
-     * @type {string[]}
-     */
     IMAGES = [];
 
     /**
-     * Sets the current percentage and updates the displayed image accordingly.
-     * @param {number} percentagePara - A number from 0 to 100 representing the fill level.
+     * Generic helper to resolve the image index for any percentage.
+     * @param {number} value - The percentage value (0–100).
+     * @param {number[]} thresholds - Optional custom thresholds.
+     * @returns {number} Index of the image in the IMAGES array.
+     */
+    resolveImageIndexFor(value, thresholds = [20, 40, 60, 80, 100]) {
+        if (value >= thresholds[4]) return 5;
+        if (value > thresholds[3]) return 4;
+        if (value > thresholds[2]) return 3;
+        if (value > thresholds[1]) return 2;
+        if (value > thresholds[0]) return 1;
+        return 0;
+    }
+
+
+    /**
+     * Set the current health/standard percentage and update the displayed image.
+     * @param {number} percentagePara - The new percentage value.
      */
     setPercentage(percentagePara) {
         this.percentage = percentagePara;
-        let imagePath = this.IMAGES[this.resolveImageIndex()];
+        let imagePath = this.IMAGES[this.resolveImageIndexFor(this.percentage)];
         this.img = this.imageCache[imagePath];
     }
 
-    /**
-     * Resolves the appropriate image index based on the current percentage value.
-     * @returns {number} Index of the image in the IMAGES array.
-     */
-    resolveImageIndex() {
-        if (this.percentage == 100) {
-            return 5;
-        } else if (this.percentage > 80) {
-            return 4;
-        } else if (this.percentage > 60) {
-            return 3;
-        } else if (this.percentage > 40) {
-            return 2;
-        } else if (this.percentage > 20) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 
     /**
-     * Sets the current coin collection percentage and updates the displayed image.
-     * @param {number} coinPercentagePara - A number from 0 to 100 representing the coin fill level.
+     * Set the coins percentage and update the corresponding image.
+     * @param {number} coinPercentagePara - The new coin percentage value.
      */
     setCoinsPercentage(coinPercentagePara) {
         this.coinsPercentage = coinPercentagePara;
-        let imagePath = this.IMAGES[this.resolveCoinsImageIndex()];
+        let imagePath = this.IMAGES[this.resolveImageIndexFor(this.coinsPercentage)];
         this.img = this.imageCache[imagePath];
     }
 
-    /**
-     * Resolves the appropriate image index based on the current coin percentage.
-     * @returns {number} Index of the image in the IMAGES array.
-     */
-    resolveCoinsImageIndex() {
-        if (this.coinsPercentage == 100) {
-            return 5;
-        } else if (this.coinsPercentage > 80) {
-            return 4;
-        } else if (this.coinsPercentage > 60) {
-            return 3;
-        } else if (this.coinsPercentage > 40) {
-            return 2;
-        } else if (this.coinsPercentage > 20) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 
     /**
-     * Sets the current bottle collection percentage and updates the displayed image.
-     * @param {number} bottlePercentagePara - A number from 0 to 100 representing the bottle fill level.
+     * Set the bottle percentage and update the displayed image.
+     * Uses different threshold values for bottles.
+     * @param {number} bottlePercentagePara - The new bottle percentage.
      */
     setBottlePercentage(bottlePercentagePara) {
         this.bottlePercentage = bottlePercentagePara;
-        let imagePath = this.IMAGES[this.resolveBottleImageIndex()];
+        let imagePath = this.IMAGES[this.resolveImageIndexFor(this.bottlePercentage, [10, 40, 60, 80, 100])];
         this.img = this.imageCache[imagePath];
-    }
-
-    /**
-     * Resolves the appropriate image index based on the current bottle percentage.
-     * @returns {number} Index of the image in the IMAGES array.
-     */
-    resolveBottleImageIndex() {
-        if (this.bottlePercentage == 100) {
-            return 5;
-        } else if (this.bottlePercentage > 80) {
-            return 4;
-        } else if (this.bottlePercentage > 60) {
-            return 3;
-        } else if (this.bottlePercentage > 40) {
-            return 2;
-        } else if (this.bottlePercentage > 10) {
-            return 1;
-        } else {
-            return 0;
-        }
     }
 }

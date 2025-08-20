@@ -35,7 +35,9 @@ class Keyboard {
 
 const keyboard = new Keyboard();
 
-// Keyboard events for desktop controls
+/**
+ * Listen for keydown events and update keyboard flags for desktop controls.
+ */
 window.addEventListener("keydown", (event) => {
     if (event.keyCode == 39) keyboard.RIGHT = true;
     if (event.keyCode == 37) keyboard.LEFT = true;
@@ -48,6 +50,10 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+
+/**
+ * Listen for keyup events and reset keyboard flags when a key is released.
+ */
 window.addEventListener("keyup", (event) => {
     if (event.keyCode == 39) keyboard.RIGHT = false;
     if (event.keyCode == 37) keyboard.LEFT = false;
@@ -65,7 +71,7 @@ window.addEventListener("keyup", (event) => {
  * Sets up mobile touch controls for game actions.
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // Right button for mobile
+
     const rightBtn = document.getElementById('rightBtnMobile');
     if (rightBtn) {
         rightBtn.addEventListener('touchstart', (event) => {
@@ -78,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Left button for mobile
     const lefttBtn = document.getElementById('leftBtnMobile');
     if (lefttBtn) {
         lefttBtn.addEventListener('touchstart', (event) => {
@@ -91,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Jump button for mobile
     const jumptBtn = document.getElementById('jumpBtnMobile');
     if (jumptBtn) {
         jumptBtn.addEventListener('touchstart', (event) => {
@@ -104,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Throw button for mobile
     const throwtBtn = document.getElementById('throwBtnMobile');
     if (throwtBtn) {
         throwtBtn.addEventListener('touchstart', (event) => {

@@ -11,9 +11,9 @@ class normalChicken extends MovableObject {
     y = 340;
     energy = 10;
     offset = {
-        top: 10,
-        bottom: 15,
-        left: 6,
+        top: 5,
+        bottom: 5,
+        left: 10,
         right: 10,
     };
 
@@ -52,17 +52,15 @@ class normalChicken extends MovableObject {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-                // console.log('Chicken is dead');
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
-                console.log('Chicken is walking');
             }
         }, 100);
 
         this.movementInterval = setInterval(() => {
             if (this.world && (this.world.gameWin || this.world.gameOver)) return;
             if (!this.isDead()) {
-                this.moveLeft(); // Move only if the chicken is alive
+                this.moveLeft();
             }
         }, 1000 / 60);
     }

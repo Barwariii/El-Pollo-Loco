@@ -5,7 +5,7 @@
  */
 function createLevel1() {
 
-    //! coins section
+    
     Coins.count = 0;
     const firstSetOfCoins = [
         new Coins(600),
@@ -26,7 +26,7 @@ function createLevel1() {
     ];
 
 
-    //! salsa bottles section
+    
     Bottles.count = 0;
     const firstSetOfBottles = [
         new Bottles(500),

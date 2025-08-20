@@ -8,13 +8,13 @@
 class smallChicken extends MovableObject {
     height = 65;
     width = 65;
-    y = 375;
+    y = 365;
     energy = 5;
     offset = {
-        top: 10,
-        bottom: 10,
+        top: 5,
+        bottom: 5,
         left: 4,
-        right: 9,
+        right: 2,
     };
 
     IMAGES_WALKING = [
@@ -52,10 +52,6 @@ class smallChicken extends MovableObject {
         this.animationInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-                // setTimeout(() => {
-                //     clearInterval(this.animationInterval);
-                //     clearInterval(this.movementInterval);
-                // }, 500); // Remove the chicken after 500ms
             } else {
                 this.playAnimation(this.IMAGES_WALKING);
             }

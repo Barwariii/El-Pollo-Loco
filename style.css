@@ -1,3 +1,9 @@
+:root {
+  /* Max. Content-Breite + horizontale Paddings dynamisch */
+  --content-max-w: clamp(320px, 92vw, 1280px);
+  --content-pad: clamp(12px, 2vw, 24px);
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -13,6 +19,16 @@ section {
   height: 100vh;
   width: 100vw;
   background-repeat: no-repeat;
+}
+
+#mainContainer {
+  max-height: 1080px;
+  position: relative;
+  height: 100%;
+}
+
+h1 {
+  text-align: center;
 }
 
 #game-container {
@@ -111,7 +127,8 @@ canvas {
   height: 100%;
   background-image: url(img/9_intro_outro_screens/game_over/oh\ no\ you\ lost!.png);
   background-position: center;
-  background-size: 90% 70%;
+  background-size: cover;
+  background-color: black;
   display: flex;
   background-repeat: no-repeat;
   align-items: center;
@@ -242,7 +259,6 @@ li::marker {
 .legal-notice {
   position: absolute;
   bottom: 24px;
-  left: 24px;
   background: rgba(34, 34, 34, 0.85);
   padding: 10px 30px;
   border-radius: 18px;

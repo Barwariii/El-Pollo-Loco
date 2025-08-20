@@ -20,6 +20,7 @@ class Cloud extends MovableObject {
         this.animate();
     }
 
+    
     /**
      * Continuously moves the cloud to the left at ~60 FPS.
      */

@@ -7,13 +7,16 @@ backgroundMusic.loop = true;
 backgroundMusic.volume = 0.05;
 allSounds.push(backgroundMusic);
 
-let isGameStarted = false; // Variable to track if the game has started
+let isGameStarted = false;
 let fullscreen;
 
 
 /**
  * Initializes the game by setting up canvas, UI elements, music state, and event listeners.
  * Loads saved music preferences from localStorage.
+ * 
+ * - Loads volume/mute settings from localStorage and applies them.
+ * - Registers click listeners for Start / Restart / New Game buttons.
  */
 function init() {
     canvas = document.getElementById('canvas');
@@ -21,7 +24,9 @@ function init() {
     fullscreen = document.getElementById('fullScreen');
     fullscreen.addEventListener('click', aktiveFullscreen);
 
-    // Load music status and icon from localStorage.
+    /**
+     * Load music status and update the volume icon.
+     */
     const musicMuted = localStorage.getItem('musicMuted') === 'true';
     allSounds.forEach(snd => snd.muted = musicMuted);
     backgroundMusic.muted = musicMuted;
@@ -34,28 +39,36 @@ function init() {
         volumeControl.src = 'img/general_icons/volume_up_24dp.svg';
     }
 
-    // Start button
+    /**
+     * Register the start button for starting the game.
+     */
     const startButton = document.getElementById('startButton');
     startButton.addEventListener('click', () => {
         document.getElementById('start-screen').style.display = 'none';
         startGame();
     });
 
-    // Restart button (Game Over)
+    /**
+     * Register restart button (Game Over screen) for restarting the current game.
+     */
     const restartButton = document.getElementById('restartButton');
     restartButton.addEventListener('click', () => {
         document.getElementById('gameOverScreen').style.display = 'none';
         restartGame();
     });
 
-    // Restart and new game buttons
+    /**
+     * Register the “new game” button for starting a new game after game over.
+     */
     document.getElementById('newGameButton')
         .addEventListener('click', () => {
             document.getElementById('gameOverScreen').style.display = 'none';
             restartGame();
         });
 
-    // Restart button in Win Screen
+    /**
+     * Register the restart button in the Win screen.
+     */
     document.getElementById('restartButton')
         .addEventListener('click', () => {
             document.getElementById('winScreen').style.display = 'none';

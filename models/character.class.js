@@ -13,7 +13,7 @@ class Character extends MovableObject {
     height = 350;
     y = 90;
     speed = 10;
-    energy = 120;
+    energy = 300;
     offset = {
         top: 140,
         bottom: 10,
@@ -246,25 +246,30 @@ class Character extends MovableObject {
         this.playAnimation(this.IMAGES_DEAD);
     }
 
+
     /** Plays hurt animation. */
     playHurtAnimation() {
         this.playAnimation(this.IMAGES_HURT);
     }
+
 
     /** Plays jumping animation. */
     playJumpingAnimation() {
         this.playAnimation(this.IMAGES_JUMING);
     }
 
+
     /** Plays walking animation. */
     playWalkingAnimation() {
         this.playAnimation(this.IMAGES_WALKING);
     }
 
+
     /** Plays idle animation. */
     playIdleAnimation() {
         this.playAnimation(this.IMAGES_IDLE);
     }
+
 
     /** Plays long idle animation. */
     playLongIdleAnimation() {
